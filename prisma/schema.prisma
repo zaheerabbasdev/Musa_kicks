@@ -1,0 +1,395 @@
+// Musa Kicks — Production Prisma Schema (MySQL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ───────────────────────────────────────────────────
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  COD
+}
+
+enum RewardStatus {
+  LOCKED
+  AVAILABLE
+  CLAIMED
+  EXPIRED
+}
+
+enum LoyaltyCycleStatus {
+  ACTIVE
+  COMPLETED
+}
+
+// ── User ───────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid()) @db.VarChar(64)
+  email        String   @unique @db.VarChar(191)
+  name         String   @db.VarChar(191)
+  phone        String?  @db.VarChar(64)
+  passwordHash String   @db.VarChar(255)
+  role         Role     @default(CUSTOMER)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  cart          Cart?
+  wishlist      Wishlist?
+  orders        Order[]
+  addresses     Address[]
+  rewards       Reward[]
+  loyaltyCycles LoyaltyCycle[]
+
+  @@index([email])
+  @@map("users")
+}
+
+// ── Category ───────────────────────────────────────────────
+
+model Category {
+  id          String   @id @default(cuid()) @db.VarChar(64)
+  name        String   @db.VarChar(100)
+  slug        String   @unique @db.VarChar(100)
+  description String?  @db.Text
+  imageUrl    String?  @db.VarChar(500)
+  publicId    String?  @db.VarChar(255) // Cloudinary public ID
+  altText     String?  @db.VarChar(255)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  products Product[]
+
+  @@index([slug])
+  @@index([isActive])
+  @@map("categories")
+}
+
+// ── Product ─────────────────────────────────────────────────
+
+model Product {
+  id               String   @id @default(cuid()) @db.VarChar(64)
+  name             String   @db.VarChar(191)
+  slug             String   @unique @db.VarChar(191)
+  sku              String   @unique @db.VarChar(100)
+  description      String   @db.LongText
+  shortDescription String?  @db.Text
+  price            Decimal  @db.Decimal(10, 2)
+  compareAtPrice   Decimal? @db.Decimal(10, 2)
+  categoryId       String   @db.VarChar(64)
+  isFeatured       Boolean  @default(false)
+  isNewArrival     Boolean  @default(false)
+  isBestSeller     Boolean  @default(false)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  category      Category         @relation(fields: [categoryId], references: [id])
+  images        ProductImage[]
+  variants      ProductVariant[]
+  cartItems     CartItem[]
+  wishlistItems WishlistItem[]
+  orderItems    OrderItem[]
+
+  @@index([slug])
+  @@index([sku])
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([isFeatured])
+  @@index([isNewArrival])
+  @@index([isBestSeller])
+  @@index([createdAt])
+  @@map("products")
+}
+
+// ── ProductImage ────────────────────────────────────────────
+
+model ProductImage {
+  id        String   @id @default(cuid()) @db.VarChar(64)
+  productId String   @db.VarChar(64)
+  imageUrl  String   @db.VarChar(500)
+  publicId  String   @db.VarChar(255) // Cloudinary public ID — used for deletion
+  altText   String?  @db.VarChar(255)
+  sortOrder Int      @default(0)
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([productId, isPrimary])
+  @@map("product_images")
+}
+
+// ── ProductVariant ──────────────────────────────────────────
+
+model ProductVariant {
+  id        String   @id @default(cuid()) @db.VarChar(64)
+  productId String   @db.VarChar(64)
+  size      String   @db.VarChar(32) // e.g. "40", "41", "42", "UK 8"
+  color     String   @db.VarChar(50) // e.g. "Black", "White", "Red"
+  colorHex  String?  @db.VarChar(32) // e.g. "#000000"
+  sku       String   @unique @db.VarChar(100)
+  stock     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([productId])
+  @@index([sku])
+  @@index([productId, size, color])
+  @@map("product_variants")
+}
+
+// ── Cart ────────────────────────────────────────────────────
+
+model Cart {
+  id        String   @id @default(cuid()) @db.VarChar(64)
+  userId    String?  @unique @db.VarChar(64)
+  sessionId String?  @unique @db.VarChar(128) // for guest carts
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@index([sessionId])
+  @@map("carts")
+}
+
+// ── CartItem ────────────────────────────────────────────────
+
+model CartItem {
+  id        String   @id @default(cuid()) @db.VarChar(64)
+  cartId    String   @db.VarChar(64)
+  productId String   @db.VarChar(64)
+  variantId String   @db.VarChar(64)
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart    Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product        @relation(fields: [productId], references: [id])
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@unique([cartId, variantId])
+  @@index([cartId])
+  @@map("cart_items")
+}
+
+// ── Wishlist ────────────────────────────────────────────────
+
+model Wishlist {
+  id        String   @id @default(cuid()) @db.VarChar(64)
+  userId    String   @unique @db.VarChar(64)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items WishlistItem[]
+
+  @@map("wishlists")
+}
+
+// ── WishlistItem ────────────────────────────────────────────
+
+model WishlistItem {
+  id         String   @id @default(cuid()) @db.VarChar(64)
+  wishlistId String   @db.VarChar(64)
+  productId  String   @db.VarChar(64)
+  createdAt  DateTime @default(now())
+
+  wishlist Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id])
+
+  @@unique([wishlistId, productId])
+  @@index([wishlistId])
+  @@map("wishlist_items")
+}
+
+// ── Address ─────────────────────────────────────────────────
+
+model Address {
+  id            String   @id @default(cuid()) @db.VarChar(64)
+  userId        String   @db.VarChar(64)
+  label         String   @default("Home") @db.VarChar(32) // "Home", "Work", "Other"
+  recipientName String   @db.VarChar(100)
+  phone         String   @db.VarChar(32)
+  line1         String   @db.VarChar(255)
+  line2         String?  @db.VarChar(255)
+  city          String   @db.VarChar(100)
+  province      String   @db.VarChar(100)
+  postalCode    String?  @db.VarChar(32)
+  country       String   @default("Pakistan") @db.VarChar(64)
+  isDefault     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+// ── Order ───────────────────────────────────────────────────
+
+model Order {
+  id            String        @id @default(cuid()) @db.VarChar(64)
+  orderNumber   String        @unique @db.VarChar(64)
+  userId        String?       @db.VarChar(64)
+  guestName     String?       @db.VarChar(100)
+  guestEmail    String?       @db.VarChar(191)
+  guestPhone    String?       @db.VarChar(32)
+  addressId     String?       @db.VarChar(64)
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+  subtotal      Decimal       @db.Decimal(10, 2)
+  shippingFee   Decimal       @db.Decimal(10, 2) @default(0)
+  total         Decimal       @db.Decimal(10, 2)
+  notes         String?       @db.Text
+  whatsappSent  Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user             User?             @relation(fields: [userId], references: [id])
+  address          Address?          @relation(fields: [addressId], references: [id])
+  items            OrderItem[]
+  loyaltyPurchases LoyaltyPurchase[]
+
+  @@index([orderNumber])
+  @@index([userId])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+// ── OrderItem ───────────────────────────────────────────────
+
+model OrderItem {
+  id          String   @id @default(cuid()) @db.VarChar(64)
+  orderId     String   @db.VarChar(64)
+  productId   String?  @db.VarChar(64) // nullable in case product is deleted
+  variantId   String?  @db.VarChar(64)
+  productName String   @db.VarChar(191) // snapshot at time of order
+  productSku  String   @db.VarChar(100)
+  size        String   @db.VarChar(32)
+  color       String   @db.VarChar(50)
+  imageUrl    String?  @db.VarChar(500) // snapshot of image URL at time of order
+  price       Decimal  @db.Decimal(10, 2)
+  quantity    Int
+  createdAt   DateTime @default(now())
+
+  order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variant ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+// ── LoyaltyCycle ────────────────────────────────────────────
+
+model LoyaltyCycle {
+  id            String             @id @default(cuid()) @db.VarChar(64)
+  userId        String             @db.VarChar(64)
+  purchaseCount Int                @default(0)
+  requiredCount Int                @default(4) // configurable per cycle
+  status        LoyaltyCycleStatus @default(ACTIVE)
+  startedAt     DateTime           @default(now())
+  completedAt   DateTime?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purchases LoyaltyPurchase[]
+
+  @@index([userId])
+  @@index([userId, status])
+  @@map("loyalty_cycles")
+}
+
+// ── LoyaltyPurchase ─────────────────────────────────────────
+
+model LoyaltyPurchase {
+  id      String   @id @default(cuid()) @db.VarChar(64)
+  cycleId String   @db.VarChar(64)
+  orderId String   @db.VarChar(64)
+
+  cycle LoyaltyCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  order Order        @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([cycleId, orderId])
+  @@index([cycleId])
+  @@map("loyalty_purchases")
+}
+
+// ── Reward ──────────────────────────────────────────────────
+
+model Reward {
+  id          String       @id @default(cuid()) @db.VarChar(64)
+  customerId  String       @db.VarChar(64)
+  title       String       @db.VarChar(191)
+  description String       @db.Text
+  status      RewardStatus @default(AVAILABLE)
+  claimedAt   DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  customer User @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([status])
+  @@map("rewards")
+}
+
+// ── SiteSettings ────────────────────────────────────────────
+
+model SiteSettings {
+  id        String   @id @default(cuid()) @db.VarChar(64)
+  key       String   @unique @db.VarChar(100)
+  value     String   @db.LongText
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+  @@map("site_settings")
+}
