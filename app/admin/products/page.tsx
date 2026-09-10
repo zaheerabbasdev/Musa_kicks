@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAdminProducts } from "@/lib/services/product.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faPencil, faEye, faBoxOpen } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faPencil, faBoxOpen } from "@fortawesome/free-solid-svg-icons";
 import { Badge } from "@/components/ui/Badge";
 
 export const metadata: Metadata = { title: "Products — Admin" };
@@ -102,15 +102,7 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
                         </Badge>
                       </td>
                       <td className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Link
-                            href={`/product/${product.slug}`}
-                            target="_blank"
-                            className="btn btn-ghost btn-icon btn-sm"
-                            title="View in store"
-                          >
-                            <FontAwesomeIcon icon={faEye} className="w-3.5 h-3.5" />
-                          </Link>
+                        <div className="flex justify-end">
                           <Link
                             href={`/admin/products/${product.id}/edit`}
                             className="btn btn-secondary btn-sm gap-1.5"
