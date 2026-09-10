@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faListUl, faBoxOpen } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faPencil } from "@fortawesome/free-solid-svg-icons";
 
 export const metadata: Metadata = {
   title: "Categories — Admin",
@@ -17,13 +18,17 @@ export default async function AdminCategoriesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Footwear Categories</h1>
           <p className="text-xs text-text-muted mt-0.5">
             Organize catalog into sneakers, running, casual, formal, boots, and slides
           </p>
         </div>
+        <Link href="/admin/categories/new" className="btn btn-primary gap-2">
+          <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
+          Add Category
+        </Link>
       </div>
 
       <div className="card overflow-hidden">
@@ -36,6 +41,7 @@ export default async function AdminCategoriesPage() {
                 <th className="text-left">Description</th>
                 <th className="text-right">Products</th>
                 <th className="text-center">Status</th>
+                <th className="text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -59,6 +65,15 @@ export default async function AdminCategoriesPage() {
                     >
                       {cat.isActive ? "Active" : "Inactive"}
                     </span>
+                  </td>
+                  <td className="text-right">
+                    <Link
+                      href={`/admin/categories/${cat.id}/edit`}
+                      className="btn btn-secondary btn-sm inline-flex items-center gap-1.5"
+                    >
+                      <FontAwesomeIcon icon={faPencil} className="text-xs" />
+                      Edit
+                    </Link>
                   </td>
                 </tr>
               ))}

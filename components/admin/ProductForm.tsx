@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,7 +36,8 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
     isActive: initialData?.isActive ?? true,
   });
 
-  const [imageUrl, setImageUrl] = useState("");
+  const [uploadingImages, setUploadingImages] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<string[]>(
     initialData?.images?.map((img: any) => img.url) ?? []
   );
@@ -63,10 +64,57 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
     setVariants(variants.filter((_, i) => i !== index));
   };
 
-  const addImage = () => {
-    if (imageUrl.trim()) {
-      setImages([...images, imageUrl.trim()]);
-      setImageUrl("");
+  const addImages = async (files: FileList | null) => {
+    if (!files?.length) return;
+
+    setUploadingImages(true);
+    setError(null);
+
+    try {
+      const uploadedImages: string[] = [];
+
+      for (const file of Array.from(files)) {
+        if (!file.type.startsWith("image/")) {
+          throw new Error("Only image files can be uploaded.");
+        }
+
+        const signatureResponse = await fetch("/api/cloudinary/sign", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({}),
+        });
+
+        if (!signatureResponse.ok) {
+          throw new Error("Could not prepare the image upload.");
+        }
+
+        const signature = await signatureResponse.json();
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("api_key", signature.apiKey);
+        formData.append("timestamp", String(signature.timestamp));
+        formData.append("signature", signature.signature);
+        formData.append("folder", signature.folder);
+
+        const uploadResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`,
+          { method: "POST", body: formData }
+        );
+
+        if (!uploadResponse.ok) {
+          throw new Error(`Failed to upload ${file.name}.`);
+        }
+
+        const uploaded = await uploadResponse.json();
+        uploadedImages.push(uploaded.secure_url);
+      }
+
+      setImages((currentImages) => [...currentImages, ...uploadedImages]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to upload images.");
+    } finally {
+      setUploadingImages(false);
+      if (imageInputRef.current) imageInputRef.current.value = "";
     }
   };
 
@@ -288,16 +336,24 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
 
         <div className="flex gap-2">
           <input
-            type="url"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-            className="input flex-1"
-            placeholder="Enter image URL (Unsplash, Cloudinary, etc.)"
+            ref={imageInputRef}
+            id="product-image-upload"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={(e) => addImages(e.target.files)}
+            className="sr-only"
           />
-          <button type="button" onClick={addImage} className="btn btn-secondary">
-            Add Image
-          </button>
+          <label
+            htmlFor="product-image-upload"
+            className={`btn btn-secondary flex-1 cursor-pointer ${uploadingImages ? "pointer-events-none opacity-60" : ""}`}
+          >
+            {uploadingImages ? "Uploading..." : "Add Images"}
+          </label>
         </div>
+        <p className="text-xs text-text-muted">
+          Select one or more local JPG, PNG, WebP, or AVIF images. The first image is used as the primary image.
+        </p>
 
         {images.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
