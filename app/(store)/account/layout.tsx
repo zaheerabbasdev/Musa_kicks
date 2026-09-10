@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 
 const ACCOUNT_NAV = [
   { href: "/account", label: "Overview", icon: faUser },
+  { href: "/account/profile", label: "My Profile", icon: faUser },
   { href: "/account/orders", label: "My Orders", icon: faShoppingBag },
   { href: "/account/rewards", label: "Loyalty Rewards", icon: faGift },
   { href: "/wishlist", label: "Wishlist", icon: faHeart },
