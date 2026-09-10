@@ -13,6 +13,23 @@ export async function PUT(request: Request, { params }: RouteContext) {
 
     const { id } = await params;
     const data = await request.json();
+    const price = Number(data.price);
+    const variants = Array.isArray(data.variants) ? data.variants : [];
+    const images = Array.isArray(data.images) ? data.images : [];
+
+    if (!data.name || !data.sku || !data.categoryId || !data.description || !Number.isFinite(price)) {
+      return NextResponse.json({ message: "Name, SKU, category, description, and a valid price are required." }, { status: 400 });
+    }
+
+    if (images.length === 0 || images.some((image: { url?: string; imageUrl?: string }) => !(image.url || image.imageUrl))) {
+      return NextResponse.json({ message: "At least one valid product image is required." }, { status: 400 });
+    }
+
+    const variantSkus = variants.map((variant: { sku?: string }) => variant.sku).filter(Boolean);
+    if (new Set(variantSkus).size !== variantSkus.length) {
+      return NextResponse.json({ message: "Each product variant must have a unique SKU." }, { status: 400 });
+    }
+
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) {
       return NextResponse.json({ message: "Product not found" }, { status: 404 });
@@ -37,7 +54,7 @@ export async function PUT(request: Request, { params }: RouteContext) {
           isBestSeller: data.isBestSeller ?? false,
           isActive: data.isActive ?? true,
           images: {
-            create: (data.images ?? []).map((image: { url?: string; imageUrl?: string; publicId?: string }, index: number) => ({
+            create: images.map((image: { url?: string; imageUrl?: string; publicId?: string }, index: number) => ({
               imageUrl: image.url ?? image.imageUrl ?? "",
               publicId: image.publicId ?? `prod-${id}-${index}`,
               isPrimary: index === 0,
@@ -45,7 +62,7 @@ export async function PUT(request: Request, { params }: RouteContext) {
             })),
           },
           variants: {
-            create: (data.variants ?? []).map((variant: { color: string; size: string; stock: number; sku: string }) => ({
+            create: variants.map((variant: { color: string; size: string; stock: number; sku: string }) => ({
               color: variant.color,
               size: variant.size,
               stock: variant.stock,
@@ -60,6 +77,9 @@ export async function PUT(request: Request, { params }: RouteContext) {
     return NextResponse.json(product);
   } catch (error) {
     console.error("Failed to update product:", error);
-    return NextResponse.json({ message: "Failed to update product" }, { status: 500 });
+    return NextResponse.json(
+      { message: error instanceof Error ? error.message : "Failed to update product" },
+      { status: 500 }
+    );
   }
 }

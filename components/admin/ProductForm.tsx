@@ -38,6 +38,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
 
   const [uploadingImages, setUploadingImages] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const [pendingImagePreviews, setPendingImagePreviews] = useState<string[]>([]);
   const [images, setImages] = useState<string[]>(
     initialData?.images?.map((img: any) => img.url ?? img.imageUrl) ?? []
   );
@@ -67,13 +68,16 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
   const addImages = async (files: FileList | null) => {
     if (!files?.length) return;
 
+    const selectedFiles = Array.from(files);
+    const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file));
+    setPendingImagePreviews(previewUrls);
     setUploadingImages(true);
     setError(null);
 
     try {
       const uploadedImages: string[] = [];
 
-      for (const file of Array.from(files)) {
+      for (const file of selectedFiles) {
         if (!file.type.startsWith("image/")) {
           throw new Error("Only image files can be uploaded.");
         }
@@ -110,6 +114,8 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
       }
 
       setImages((currentImages) => [...currentImages, ...uploadedImages]);
+      setPendingImagePreviews(uploadedImages);
+      previewUrls.forEach((previewUrl) => URL.revokeObjectURL(previewUrl));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to upload images.");
     } finally {
@@ -124,6 +130,16 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (uploadingImages) {
+      setError("Please wait for the image upload to finish before saving the product.");
+      return;
+    }
+
+    if (images.length === 0) {
+      setError("Please add at least one product image before saving.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -355,6 +371,26 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
           Select one or more local JPG, PNG, WebP, or AVIF images. The first image is used as the primary image.
         </p>
 
+        {pendingImagePreviews.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
+            {pendingImagePreviews.map((previewUrl, index) => (
+              <div
+                key={previewUrl}
+                className="relative rounded-xl overflow-hidden aspect-square border border-accent bg-surface-2"
+              >
+                <img
+                  src={previewUrl}
+                  alt={`Selected image preview ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                <span className="absolute inset-x-2 bottom-2 rounded-md bg-black/70 px-2 py-1 text-center text-[10px] font-semibold text-white">
+                  {uploadingImages ? "Uploading..." : "Selected"}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
         {images.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
             {images.map((url, index) => (
@@ -471,7 +507,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
         </Link>
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || uploadingImages}
           className="btn btn-primary flex items-center gap-2"
         >
           <FontAwesomeIcon icon={faFloppyDisk} />
