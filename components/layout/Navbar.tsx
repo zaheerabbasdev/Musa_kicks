@@ -57,11 +57,10 @@ export function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-neutral-200/80"
-            : "bg-white/90 backdrop-blur-sm border-b border-neutral-100"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+          ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-neutral-200/80"
+          : "bg-white/90 backdrop-blur-sm border-b border-neutral-100"
+          }`}
         style={{ height: "var(--nav-height)" }}
       >
         <div className="container-site h-full flex items-center justify-between gap-4">
@@ -85,9 +84,8 @@ export function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`nav-link text-xs font-bold uppercase tracking-wider ${
-                  pathname === item.href || pathname.startsWith(item.href + "?") ? "active" : ""
-                }`}
+                className={`nav-link text-xs font-bold uppercase tracking-wider ${pathname === item.href || pathname.startsWith(item.href + "?") ? "active" : ""
+                  }`}
               >
                 {item.label}
               </Link>
@@ -216,9 +214,8 @@ export function Navbar() {
 
       {/* Mobile Menu Drawer */}
       <div
-        className={`fixed inset-y-0 left-0 w-4/5 max-w-xs bg-[var(--card)] z-[150] transform transition-transform duration-300 shadow-[var(--shadow-xl)] ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 w-4/5 max-w-xs bg-[var(--card)] z-[150] transform transition-transform duration-300 shadow-[var(--shadow-xl)] ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
         role="dialog"
         aria-label="Mobile navigation"
       >
