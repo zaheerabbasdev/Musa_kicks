@@ -86,14 +86,14 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Order #</th>
-                <th>Customer</th>
-                <th>Items</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Payment</th>
-                <th>Date</th>
-                <th>Actions</th>
+                <th className="text-left">Order #</th>
+                <th className="text-left">Customer</th>
+                <th className="text-left">Items</th>
+                <th className="text-right">Total</th>
+                <th className="text-center">Status</th>
+                <th className="text-center">Payment</th>
+                <th className="text-left">Date</th>
+                <th className="text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -106,28 +106,30 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
               ) : (
                 orders.map((order) => (
                   <tr key={order.id}>
-                    <td className="font-mono text-sm font-medium">{order.orderNumber}</td>
-                    <td>{order.user?.name ?? order.guestName ?? "Guest"}</td>
-                    <td className="text-sm" style={{ color: "var(--muted-foreground)" }}>
+                    <td className="text-left font-mono text-sm font-medium">{order.orderNumber}</td>
+                    <td className="text-left">{order.user?.name ?? order.guestName ?? "Guest"}</td>
+                    <td className="text-left text-sm" style={{ color: "var(--muted-foreground)" }}>
                       {order.items[0]?.productName ?? "—"}
                     </td>
-                    <td className="font-medium">{currencySymbol} {Number(order.total).toLocaleString()}</td>
-                    <td><OrderStatusBadge status={order.status} /></td>
-                    <td>
+                    <td className="text-right font-semibold">{currencySymbol} {Number(order.total).toLocaleString()}</td>
+                    <td className="text-center"><OrderStatusBadge status={order.status} /></td>
+                    <td className="text-center">
                       <span className="text-xs font-medium" style={{
                         color: order.paymentStatus === "PAID" ? "var(--success)" : order.paymentStatus === "PENDING" ? "var(--warning)" : "var(--muted-foreground)"
                       }}>
                         {order.paymentStatus}
                       </span>
                     </td>
-                    <td className="text-sm" style={{ color: "var(--muted-foreground)" }}>
+                    <td className="text-left text-sm" style={{ color: "var(--muted-foreground)" }}>
                       {new Date(order.createdAt).toLocaleDateString("en-PK")}
                     </td>
-                    <td>
-                      <Link href={`/admin/orders/${order.id}`} className="btn btn-secondary btn-sm gap-1.5">
-                        <FontAwesomeIcon icon={faEye} className="w-3 h-3" />
-                        View
-                      </Link>
+                    <td className="text-right">
+                      <div className="flex justify-end">
+                        <Link href={`/admin/orders/${order.id}`} className="btn btn-secondary btn-sm gap-1.5">
+                          <FontAwesomeIcon icon={faEye} className="w-3 h-3" />
+                          View
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))

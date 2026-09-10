@@ -4,10 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
   faStar,
-  faTruck,
-  faShield,
+  faTruckFast,
   faGift,
   faCheckCircle,
+  faAward,
+  faFeatherPointed,
+  faFire,
+  faRotateLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { getFeaturedProducts, getNewArrivals, getBestSellers } from "@/lib/services/product.service";
@@ -15,10 +18,21 @@ import { getCategories } from "@/lib/services/category.service";
 import { getSettings } from "@/lib/services/settings.service";
 import { siteConfig } from "@/config/site";
 import { CloudinaryImage } from "@/components/cloudinary/CloudinaryImage";
+import { CategoryCard } from "@/components/categories/CategoryCard";
 
 export const metadata: Metadata = {
   title: `${siteConfig.name} — ${siteConfig.tagline}`,
   description: siteConfig.description,
+};
+
+// High-resolution curated editorial category visuals
+const CATEGORY_VISUALS: Record<string, string> = {
+  sneakers: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&q=80",
+  casual:   "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80",
+  running:  "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=800&q=80",
+  formal:   "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=800&q=80",
+  boots:    "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=800&q=80",
+  slides:   "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=800&q=80",
 };
 
 export default async function HomePage() {
@@ -33,98 +47,117 @@ export default async function HomePage() {
   const currencySymbol = settings?.currencySymbol ?? "Rs.";
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-white overflow-hidden">
       {/* ── HERO ──────────────────────────────────────────────── */}
       <section
-        className="relative min-h-[85vh] flex items-center overflow-hidden"
-        style={{ background: "var(--primary)" }}
+        className="relative min-h-[90vh] flex items-center bg-neutral-950 text-white overflow-hidden"
         aria-label="Hero section"
       >
-        {/* Background pattern */}
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: "radial-gradient(circle at 25% 50%, white 1px, transparent 1px), radial-gradient(circle at 75% 50%, white 1px, transparent 1px)",
-            backgroundSize: "80px 80px",
-          }}
-        />
+        {/* Subtle Ambient Radial Lighting */}
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-orange-600/15 blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/2 right-0 w-[550px] h-[550px] rounded-full bg-amber-500/10 blur-[150px] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none opacity-40" />
 
-        <div className="container-site relative z-10 py-20 md:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Text */}
-            <div className="order-2 lg:order-1">
-              <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6"
-                style={{ background: "rgba(216,195,165,0.15)", color: "var(--soft-beige, #D8C3A5)" }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                New Season Collection
+        <div className="container-site relative z-10 py-16 md:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            {/* Left Content */}
+            <div className="lg:col-span-7 flex flex-col items-start">
+              {/* Season Pill Badge */}
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest bg-white/10 text-white border border-white/15 backdrop-blur-md mb-8 shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>NEW DROP // 2026 EDITION</span>
               </div>
 
-              <h1
-                className="text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-none tracking-tight mb-6"
-                style={{ color: "var(--primary-foreground)" }}
-              >
-                STEP INTO
-                <br />
-                <span style={{ color: "var(--soft-beige, #D8C3A5)" }}>YOUR STYLE</span>
+              {/* Main Headline */}
+              <h1 className="flex flex-col gap-2 mb-6 font-extrabold tracking-tight">
+                <span className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white block">
+                  STEP INTO
+                </span>
+                <span className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-white via-neutral-200 to-amber-300 bg-clip-text text-transparent block">
+                  YOUR ICONIC STYLE.
+                </span>
               </h1>
 
-              <p
-                className="text-lg md:text-xl leading-relaxed mb-8 max-w-md opacity-80"
-                style={{ color: "var(--primary-foreground)" }}
-              >
-                Premium footwear designed for people who move differently.
-                Every step tells your story.
+              {/* Description */}
+              <p className="text-lg md:text-xl leading-relaxed text-neutral-300 max-w-xl mb-10">
+                Artisan footwear crafted for those who define the culture. Engineered with
+                uncompromising luxury materials and everyday street comfort.
               </p>
 
-              <div className="flex flex-wrap gap-3">
-                <Link href="/shop" className="btn btn-primary btn-xl" style={{ background: "var(--primary-foreground)", color: "var(--primary)", borderColor: "var(--primary-foreground)" }}>
+              {/* CTAs */}
+              <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
+                <Link
+                  href="/shop"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-sm font-extrabold uppercase tracking-wider bg-white text-neutral-950 hover:bg-neutral-100 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-white/5"
+                >
                   Shop Collection
                   <FontAwesomeIcon icon={faArrowRight} className="w-4 h-4" />
                 </Link>
-                <Link href="/shop?sort=newest" className="btn btn-xl" style={{ background: "transparent", color: "var(--primary-foreground)", borderColor: "rgba(255,255,255,0.3)" }}>
+                <Link
+                  href="/shop?sort=newest"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-sm font-bold uppercase tracking-wider text-white bg-white/5 hover:bg-white/10 border border-white/20 backdrop-blur-md hover:scale-[1.02] active:scale-[0.98] transition-all"
+                >
                   New Arrivals
                 </Link>
               </div>
 
-              {/* Trust indicators */}
-              <div className="flex flex-wrap gap-6 mt-10 text-sm opacity-70" style={{ color: "var(--primary-foreground)" }}>
-                <div className="flex items-center gap-1.5">
-                  <FontAwesomeIcon icon={faTruck} className="w-4 h-4" />
-                  Free shipping on orders over {currencySymbol}5,000
+              {/* Trust badges */}
+              <div className="flex flex-wrap gap-8 mt-12 pt-8 border-t border-white/10 text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white">
+                    <FontAwesomeIcon icon={faTruckFast} className="w-3.5 h-3.5" />
+                  </div>
+                  <span>Free shipping on orders over {currencySymbol}5,000</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <FontAwesomeIcon icon={faShield} className="w-4 h-4" />
-                  7-day easy returns
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white">
+                    <FontAwesomeIcon icon={faRotateLeft} className="w-3.5 h-3.5" />
+                  </div>
+                  <span>7-Day Easy Returns</span>
                 </div>
               </div>
             </div>
 
-            {/* Hero image placeholder */}
-            <div className="order-1 lg:order-2 flex justify-center">
-              <div
-                className="relative w-72 h-72 md:w-96 md:h-96 rounded-full flex items-center justify-center"
-                style={{ background: "rgba(216,195,165,0.1)", border: "2px solid rgba(216,195,165,0.2)" }}
-              >
-                <div
-                  className="text-9xl select-none"
-                  aria-hidden="true"
-                >
-                  👟
-                </div>
-                {/* Floating badges */}
-                <div
-                  className="absolute top-4 right-0 px-4 py-2 rounded-full text-xs font-bold"
-                  style={{ background: "var(--soft-beige, #D8C3A5)", color: "var(--primary)" }}
-                >
-                  Premium Quality
-                </div>
-                <div
-                  className="absolute bottom-8 left-0 px-4 py-2 rounded-full text-xs font-bold"
-                  style={{ background: "var(--primary-foreground)", color: "var(--primary)" }}
-                >
-                  Shop 4 → Get a Gift 🎁
+            {/* Right Sneaker Showcase */}
+            <div className="lg:col-span-5 flex items-center justify-center relative">
+              {/* Radial Glowing Aura */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-gradient-to-tr from-amber-500/20 via-orange-600/30 to-purple-600/15 blur-3xl" />
+              </div>
+
+              {/* High-Resolution Showcase Card */}
+              <div className="relative z-10 w-full max-w-[420px] aspect-square rounded-3xl p-6 bg-gradient-to-b from-white/10 to-white/5 border border-white/15 backdrop-blur-xl shadow-2xl flex items-center justify-center group">
+                <div className="relative w-full h-full flex items-center justify-center">
+                  {/* Sneaker Visual with dynamic hover float */}
+                  <div className="relative w-full h-full transition-transform duration-700 ease-out group-hover:scale-105 group-hover:-rotate-3">
+                    <CloudinaryImage
+                      src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1000&q=85"
+                      alt="Musa Kicks Signature Drop"
+                      width={600}
+                      height={600}
+                      fill
+                      objectFit="contain"
+                      priority
+                      className="drop-shadow-[0_25px_35px_rgba(0,0,0,0.7)]"
+                    />
+                  </div>
+
+                  {/* Top Floating Glass Pill */}
+                  <div className="absolute top-2 right-2 px-3.5 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-black/60 text-white border border-white/20 backdrop-blur-md shadow-lg flex items-center gap-1.5">
+                    <FontAwesomeIcon icon={faStar} className="w-3 h-3 text-amber-400" />
+                    <span>Premium Artisan Craft</span>
+                  </div>
+
+                  {/* Bottom Floating Glass Card */}
+                  <div className="absolute bottom-2 left-2 px-4 py-2.5 rounded-2xl bg-neutral-900/80 border border-white/15 backdrop-blur-md shadow-xl flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-sm">
+                      <FontAwesomeIcon icon={faGift} className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">Loyalty Perk</p>
+                      <p className="text-xs font-extrabold text-white">Shop 4 → Claim Special Gift</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -134,56 +167,44 @@ export default async function HomePage() {
 
       {/* ── SHOP BY CATEGORY ──────────────────────────────────── */}
       {categories.length > 0 && (
-        <section className="py-16 md:py-20" aria-labelledby="categories-heading">
+        <section className="py-20 bg-white" aria-labelledby="categories-heading">
           <div className="container-site">
             <div className="flex items-end justify-between mb-10">
               <div>
-                <p className="text-sm uppercase tracking-widest font-medium mb-2" style={{ color: "var(--muted-foreground)" }}>
-                  Browse
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400 mb-2">
+                  EXPLORE COLLECTIONS
                 </p>
-                <h2 id="categories-heading" className="text-3xl md:text-4xl font-display font-bold">
+                <h2 id="categories-heading" className="text-3xl md:text-4xl font-extrabold tracking-tight text-neutral-950">
                   Shop By Category
                 </h2>
               </div>
-              <Link href="/shop" className="hidden md:flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all" style={{ color: "var(--primary)" }}>
-                All Products <FontAwesomeIcon icon={faArrowRight} className="w-3.5 h-3.5" />
+              <Link
+                href="/shop"
+                className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-neutral-900 hover:text-orange-600 transition-colors group"
+              >
+                <span>View All Shoes</span>
+                <FontAwesomeIcon icon={faArrowRight} className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-              {categories.slice(0, 6).map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/shop/${cat.slug}`}
-                  className="group relative overflow-hidden rounded-[var(--radius-xl)] aspect-square flex flex-col items-center justify-end p-4 text-center transition-all hover:-translate-y-1"
-                  style={{ background: "var(--muted)", border: "1px solid var(--border)" }}
-                >
-                  {cat.imageUrl ? (
-                    <CloudinaryImage
-                      src={cat.imageUrl}
-                      publicId={cat.publicId}
-                      alt={cat.name}
-                      width={300}
-                      height={300}
-                      fill
-                      objectFit="cover"
-                      className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center text-5xl">
-                      {siteConfig.nav.categories.find((c) => c.label === cat.name)?.icon ?? "👟"}
-                    </div>
-                  )}
-                  <div className="relative z-10 bg-white/90 backdrop-blur-sm rounded-[var(--radius-lg)] px-3 py-1.5 w-full">
-                    <span className="text-sm font-semibold">{cat.name}</span>
-                    {(cat as { _count?: { products: number } })._count && (
-                      <span className="block text-xs text-[var(--muted-foreground)]">
-                        {(cat as { _count: { products: number } })._count.products} styles
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              ))}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {categories.slice(0, 6).map((cat) => {
+                const normalizedSlug = cat.slug.toLowerCase();
+                const visualUrl = cat.imageUrl || CATEGORY_VISUALS[normalizedSlug] || CATEGORY_VISUALS["sneakers"];
+                const count = (cat as { _count?: { products: number } })._count?.products;
+
+                return (
+                  <CategoryCard
+                    key={cat.id}
+                    id={cat.id}
+                    name={cat.name}
+                    slug={cat.slug}
+                    imageUrl={visualUrl}
+                    publicId={cat.publicId}
+                    productCount={count}
+                  />
+                );
+              })}
             </div>
           </div>
         </section>
@@ -191,19 +212,23 @@ export default async function HomePage() {
 
       {/* ── FEATURED SHOES ────────────────────────────────────── */}
       {featured.length > 0 && (
-        <section className="py-16 md:py-20" style={{ background: "var(--muted)" }} aria-labelledby="featured-heading">
+        <section className="py-20 bg-neutral-50/80 border-y border-neutral-200/60" aria-labelledby="featured-heading">
           <div className="container-site">
             <div className="flex items-end justify-between mb-10">
               <div>
-                <p className="text-sm uppercase tracking-widest font-medium mb-2" style={{ color: "var(--muted-foreground)" }}>
-                  Handpicked
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400 mb-2">
+                  HANDPICKED SELECTION
                 </p>
-                <h2 id="featured-heading" className="text-3xl md:text-4xl font-display font-bold">
+                <h2 id="featured-heading" className="text-3xl md:text-4xl font-extrabold tracking-tight text-neutral-950">
                   Featured Shoes
                 </h2>
               </div>
-              <Link href="/shop?sort=featured" className="hidden md:flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all" style={{ color: "var(--primary)" }}>
-                View All <FontAwesomeIcon icon={faArrowRight} className="w-3.5 h-3.5" />
+              <Link
+                href="/shop?sort=featured"
+                className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-neutral-900 hover:text-orange-600 transition-colors group"
+              >
+                <span>Browse All</span>
+                <FontAwesomeIcon icon={faArrowRight} className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
             <ProductGrid products={featured} currencySymbol={currencySymbol} />
@@ -211,71 +236,74 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ── LOYALTY BANNER ────────────────────────────────────── */}
+      {/* ── VIP LOYALTY BANNER ────────────────────────────────── */}
       <section
-        className="py-16 md:py-20 relative overflow-hidden"
-        style={{ background: "var(--accent)" }}
+        className="py-20 bg-neutral-950 text-white relative overflow-hidden"
         aria-labelledby="loyalty-heading"
       >
+        {/* Glow backdrop */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-r from-amber-500/15 via-orange-500/15 to-transparent blur-[120px] pointer-events-none" />
+
         <div className="container-site relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <div
-              className="text-5xl md:text-6xl mb-6"
-              aria-hidden="true"
-            >
-              🎁
+          <div className="max-w-4xl mx-auto text-center">
+            {/* VIP Tag */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest bg-amber-400/20 text-amber-300 border border-amber-400/30 mb-6">
+              <FontAwesomeIcon icon={faAward} className="w-3.5 h-3.5" />
+              <span>MUSA VIP REWARDS PROGRAM</span>
             </div>
+
             <h2
               id="loyalty-heading"
-              className="text-3xl md:text-5xl font-display font-bold mb-4"
-              style={{ color: "var(--accent-foreground)" }}
+              className="flex flex-col gap-2.5 sm:gap-3 mb-6 text-center"
             >
-              SHOP 4 TIMES.
-              <br />
-              GET A SPECIAL GIFT.
+              <span className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white block">
+                SHOP 4 TIMES.
+              </span>
+              <span className="text-xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent block">
+                CLAIM AN EXCLUSIVE COMPLIMENTARY GIFT.
+              </span>
             </h2>
-            <p
-              className="text-lg mb-8 opacity-80"
-              style={{ color: "var(--accent-foreground)" }}
-            >
-              Every qualifying purchase brings you closer to an exclusive reward.
-              Shop, earn, and celebrate your style.
+
+            <p className="text-base sm:text-lg leading-relaxed text-neutral-300 max-w-2xl mx-auto mb-10">
+              Every qualifying order automatically advances your loyalty milestone streak. Complete 4 purchases
+              to unlock exclusive pairs or limited-edition designer merchandise.
             </p>
 
-            {/* Progress demo */}
-            <div className="flex items-center justify-center gap-3 mb-8">
-              {[1, 2, 3, 4].map((n) => (
-                <div key={n} className="flex items-center gap-2">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center border-2 font-bold text-sm transition-all ${
-                      n <= 3
-                        ? "border-[var(--accent-foreground)] bg-[var(--accent-foreground)]"
-                        : "border-[rgba(216,195,165,0.3)] opacity-50"
-                    }`}
-                    style={{
-                      color: n <= 3 ? "var(--accent)" : "var(--accent-foreground)",
-                    }}
-                  >
-                    {n <= 3 ? <FontAwesomeIcon icon={faCheckCircle} className="w-5 h-5" /> : n}
+            {/* Futuristic 4-Step Milestone Tracker */}
+            <div className="max-w-xl mx-auto bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md mb-10">
+              <div className="flex items-center justify-between relative">
+                {/* Connecting background bar */}
+                <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-1 bg-white/10 z-0" />
+                <div className="absolute left-6 w-3/4 top-1/2 -translate-y-1/2 h-1 bg-gradient-to-r from-amber-400 to-orange-500 z-0" />
+
+                {[1, 2, 3].map((step) => (
+                  <div key={step} className="relative z-10 flex flex-col items-center">
+                    <div className="w-10 h-10 rounded-full bg-amber-400 text-neutral-950 font-black text-sm flex items-center justify-center shadow-lg shadow-amber-400/30">
+                      <FontAwesomeIcon icon={faCheckCircle} className="w-5 h-5" />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-300 mt-2">
+                      Order {step}
+                    </span>
                   </div>
-                  {n < 4 && (
-                    <div
-                      className="w-8 h-0.5"
-                      style={{ background: n < 3 ? "var(--accent-foreground)" : "rgba(216,195,165,0.3)" }}
-                    />
-                  )}
+                ))}
+
+                {/* Final Goal Step */}
+                <div className="relative z-10 flex flex-col items-center">
+                  <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 text-neutral-950 font-black text-sm flex items-center justify-center shadow-xl shadow-orange-500/40 animate-pulse">
+                    <FontAwesomeIcon icon={faGift} className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 mt-2">
+                    Free Gift 🎁
+                  </span>
                 </div>
-              ))}
-              <div
-                className="ml-3 w-10 h-10 rounded-full flex items-center justify-center border-2 opacity-50"
-                style={{ borderColor: "rgba(216,195,165,0.4)", color: "var(--accent-foreground)" }}
-              >
-                <FontAwesomeIcon icon={faGift} className="w-5 h-5" />
               </div>
             </div>
 
-            <Link href="/account/rewards" className="btn btn-xl" style={{ background: "var(--accent-foreground)", color: "var(--accent)", borderColor: "var(--accent-foreground)" }}>
-              Learn More About Rewards
+            <Link
+              href="/account/rewards"
+              className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-sm font-extrabold uppercase tracking-wider bg-amber-400 text-neutral-950 hover:bg-amber-300 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-amber-400/20"
+            >
+              <span>Explore Rewards Program</span>
               <FontAwesomeIcon icon={faArrowRight} className="w-4 h-4" />
             </Link>
           </div>
@@ -284,19 +312,23 @@ export default async function HomePage() {
 
       {/* ── NEW ARRIVALS ──────────────────────────────────────── */}
       {newArrivals.length > 0 && (
-        <section className="py-16 md:py-20" aria-labelledby="new-arrivals-heading">
+        <section className="py-20 bg-white" aria-labelledby="new-arrivals-heading">
           <div className="container-site">
             <div className="flex items-end justify-between mb-10">
               <div>
-                <p className="text-sm uppercase tracking-widest font-medium mb-2" style={{ color: "var(--muted-foreground)" }}>
-                  Fresh In
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400 mb-2">
+                  FRESH DROPS
                 </p>
-                <h2 id="new-arrivals-heading" className="text-3xl md:text-4xl font-display font-bold">
+                <h2 id="new-arrivals-heading" className="text-3xl md:text-4xl font-extrabold tracking-tight text-neutral-950">
                   New Arrivals
                 </h2>
               </div>
-              <Link href="/shop?sort=newest" className="hidden md:flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all" style={{ color: "var(--primary)" }}>
-                View All <FontAwesomeIcon icon={faArrowRight} className="w-3.5 h-3.5" />
+              <Link
+                href="/shop?sort=newest"
+                className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-neutral-900 hover:text-orange-600 transition-colors group"
+              >
+                <span>View All New</span>
+                <FontAwesomeIcon icon={faArrowRight} className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
             <ProductGrid products={newArrivals} currencySymbol={currencySymbol} />
@@ -306,19 +338,23 @@ export default async function HomePage() {
 
       {/* ── BEST SELLERS ──────────────────────────────────────── */}
       {bestSellers.length > 0 && (
-        <section className="py-16 md:py-20" style={{ background: "var(--muted)" }} aria-labelledby="bestsellers-heading">
+        <section className="py-20 bg-neutral-50/80 border-t border-neutral-200/60" aria-labelledby="bestsellers-heading">
           <div className="container-site">
             <div className="flex items-end justify-between mb-10">
               <div>
-                <p className="text-sm uppercase tracking-widest font-medium mb-2" style={{ color: "var(--muted-foreground)" }}>
-                  Community Favourites
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400 mb-2">
+                  MOST WANTED
                 </p>
-                <h2 id="bestsellers-heading" className="text-3xl md:text-4xl font-display font-bold">
+                <h2 id="bestsellers-heading" className="text-3xl md:text-4xl font-extrabold tracking-tight text-neutral-950">
                   Best Sellers
                 </h2>
               </div>
-              <Link href="/shop?sort=popular" className="hidden md:flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all" style={{ color: "var(--primary)" }}>
-                View All <FontAwesomeIcon icon={faArrowRight} className="w-3.5 h-3.5" />
+              <Link
+                href="/shop?sort=popular"
+                className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-neutral-900 hover:text-orange-600 transition-colors group"
+              >
+                <span>View Popular</span>
+                <FontAwesomeIcon icon={faArrowRight} className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
             <ProductGrid products={bestSellers} currencySymbol={currencySymbol} />
@@ -327,32 +363,59 @@ export default async function HomePage() {
       )}
 
       {/* ── WHY MUSA KICKS ────────────────────────────────────── */}
-      <section className="py-16 md:py-20" aria-labelledby="why-heading">
+      <section className="py-20 bg-white" aria-labelledby="why-heading">
         <div className="container-site">
-          <div className="text-center mb-12">
-            <p className="text-sm uppercase tracking-widest font-medium mb-2" style={{ color: "var(--muted-foreground)" }}>
-              Our Promise
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400 mb-2">
+              THE MUSA STANDARD
             </p>
-            <h2 id="why-heading" className="text-3xl md:text-4xl font-display font-bold">
+            <h2 id="why-heading" className="text-3xl md:text-4xl font-extrabold tracking-tight text-neutral-950">
               Why Musa Kicks?
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {[
-              { icon: "⭐", title: "Premium Quality", desc: "Materials chosen for durability and style" },
-              { icon: "🦶", title: "Comfortable Fit", desc: "Designed for all-day comfort" },
-              { icon: "✨", title: "Stylish Design", desc: "Fashion-forward footwear for every occasion" },
-              { icon: "🚚", title: "Reliable Delivery", desc: "Fast and safe delivery to your door" },
-              { icon: "🎁", title: "Exclusive Rewards", desc: "Shop 4 times and earn a special gift" },
-            ].map(({ icon, title, desc }) => (
+              {
+                icon: faAward,
+                title: "Premium Materials",
+                desc: "Full-grain leather and precision fabrics crafted for lasting luxury.",
+                accent: "text-amber-500 bg-amber-500/10",
+              },
+              {
+                icon: faFeatherPointed,
+                title: "All-Day Comfort",
+                desc: "Ergonomically tuned insoles designed for lightweight, continuous wear.",
+                accent: "text-blue-500 bg-blue-500/10",
+              },
+              {
+                icon: faFire,
+                title: "Streetwear Edge",
+                desc: "High-fashion silhouettes that turn heads wherever you step.",
+                accent: "text-orange-500 bg-orange-500/10",
+              },
+              {
+                icon: faTruckFast,
+                title: "Fast Delivery",
+                desc: "Prompt dispatch and careful insured transit straight to your doorstep.",
+                accent: "text-emerald-500 bg-emerald-500/10",
+              },
+              {
+                icon: faGift,
+                title: "VIP Loyalty",
+                desc: "Shop 4 times and receive a special complimentary gift.",
+                accent: "text-purple-500 bg-purple-500/10",
+              },
+            ].map(({ icon, title, desc, accent }) => (
               <div
                 key={title}
-                className="flex flex-col items-center text-center p-6 rounded-[var(--radius-xl)] card hover:-translate-y-1 transition-transform"
+                className="flex flex-col items-start p-6 rounded-2xl bg-white border border-neutral-200/80 hover:border-neutral-900/40 hover:shadow-lg transition-all group"
               >
-                <span className="text-4xl mb-4">{icon}</span>
-                <h3 className="font-semibold font-display mb-2 text-base">{title}</h3>
-                <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>{desc}</p>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 ${accent} transition-transform group-hover:scale-110`}>
+                  <FontAwesomeIcon icon={icon} className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-neutral-950 text-base mb-2">{title}</h3>
+                <p className="text-xs text-neutral-500 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -361,37 +424,39 @@ export default async function HomePage() {
 
       {/* ── BRAND STORY ───────────────────────────────────────── */}
       <section
-        className="py-16 md:py-24"
-        style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+        className="py-24 bg-neutral-950 text-white relative overflow-hidden"
         aria-labelledby="brand-story-heading"
       >
-        <div className="container-site">
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none opacity-30" />
+        <div className="container-site relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <p className="text-sm uppercase tracking-widest font-medium mb-3 opacity-60">
-              Our Story
+            <p className="text-xs font-extrabold uppercase tracking-[0.25em] text-amber-400 mb-4">
+              OUR ORIGIN
             </p>
             <h2
               id="brand-story-heading"
-              className="text-3xl md:text-5xl font-display font-bold mb-6"
+              className="flex flex-col gap-2 mb-8 text-center"
             >
-              Born from passion.<br />Built on quality.
+              <span className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white block">
+                Born from passion.
+              </span>
+              <span className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-400 block">
+                Engineered on quality.
+              </span>
             </h2>
-            <p className="text-lg leading-relaxed mb-4 opacity-80">
-              Musa Kicks started with a simple belief: great shoes shouldn&apos;t be
-              a luxury reserved for a few. We set out to craft premium footwear
-              that combines artisan quality with everyday wearability.
+            <p className="text-base sm:text-lg leading-relaxed text-neutral-300 mb-6">
+              Musa Kicks was founded with a single mission: footwear should never compromise between
+              unapologetic streetwear aesthetics and uncompromising craftsmanship.
             </p>
-            <p className="text-lg leading-relaxed mb-8 opacity-80">
-              Every pair is carefully selected to bring you comfort, style,
-              and confidence — whether you&apos;re on the street, at the gym, or
-              stepping into a formal setting.
+            <p className="text-base sm:text-lg leading-relaxed text-neutral-300 mb-10">
+              From limited drops to everyday classics, every pair in our collection is curated to give you
+              distinction, comfort, and undeniable presence.
             </p>
             <Link
               href="/about"
-              className="btn btn-xl"
-              style={{ background: "var(--primary-foreground)", color: "var(--primary)", borderColor: "var(--primary-foreground)" }}
+              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-extrabold uppercase tracking-wider bg-white text-neutral-950 hover:bg-neutral-100 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
             >
-              Read Our Story
+              <span>Read Our Full Story</span>
               <FontAwesomeIcon icon={faArrowRight} className="w-4 h-4" />
             </Link>
           </div>

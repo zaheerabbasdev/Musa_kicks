@@ -36,6 +36,7 @@ export function ProductCard({
   price,
   compareAtPrice,
   image,
+  category,
   isNew,
   isBestSeller,
   variants = [],
@@ -59,20 +60,20 @@ export function ProductCard({
 
   return (
     <article
-      className="product-card group"
+      className="group relative flex flex-col h-full bg-white rounded-2xl border border-neutral-200/80 hover:border-neutral-900/30 shadow-xs hover:shadow-xl transition-all duration-300 overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image container */}
-      <div className="relative aspect-square overflow-hidden bg-[var(--muted)]">
-        <Link href={`/product/${slug}`} aria-label={`View ${name}`}>
-          <div className="w-full h-full transition-transform duration-500 group-hover:scale-105">
+      <div className="relative aspect-[4/5] w-full shrink-0 bg-gradient-to-b from-neutral-50 via-neutral-100/50 to-neutral-100 overflow-hidden flex items-center justify-center">
+        <Link href={`/product/${slug}`} aria-label={`View ${name}`} className="w-full h-full block">
+          <div className="w-full h-full transition-transform duration-700 ease-out group-hover:scale-105">
             <CloudinaryImage
               publicId={image?.publicId}
               src={image?.imageUrl}
               alt={image?.altText ?? name}
-              width={400}
-              height={400}
+              width={500}
+              height={500}
               preset="card"
               fill
               objectFit="cover"
@@ -81,116 +82,124 @@ export function ProductCard({
           </div>
         </Link>
 
-        {/* Badges */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1">
-          {isNew && <Badge variant="new">New</Badge>}
-          {isBestSeller && <Badge variant="best-seller">Best Seller</Badge>}
-          {discount && <Badge variant="sale">-{discount}%</Badge>}
-          {!inStock && <Badge variant="error">Sold Out</Badge>}
+        {/* Badges: Clean, non-overlapping horizontal badges */}
+        <div className="absolute top-3 left-3 z-10 flex flex-wrap gap-1.5 pointer-events-none">
+          {discount && (
+            <span className="px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider bg-rose-600 text-white rounded-full shadow-sm">
+              -{discount}%
+            </span>
+          )}
+          {isNew && (
+            <span className="px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider bg-neutral-900 text-white rounded-full shadow-sm">
+              NEW
+            </span>
+          )}
+          {isBestSeller && !discount && (
+            <span className="px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider bg-amber-400 text-neutral-950 rounded-full shadow-sm">
+              POPULAR
+            </span>
+          )}
+          {!inStock && (
+            <span className="px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider bg-neutral-800 text-neutral-300 rounded-full shadow-sm">
+              SOLD OUT
+            </span>
+          )}
         </div>
 
-        {/* Actions overlay */}
+        {/* Wishlist Button: Glassmorphic circle */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            setIsWishlisted(!isWishlisted);
+          }}
+          className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md shadow-md border border-white/60 flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-neutral-700 hover:text-rose-600"
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        >
+          <FontAwesomeIcon
+            icon={isWishlisted ? faHeartSolid : faHeartOutline}
+            className={`w-4 h-4 transition-colors ${isWishlisted ? "text-rose-600" : "text-neutral-500 hover:text-neutral-900"}`}
+          />
+        </button>
+
+        {/* Quick View Button overlay */}
         <div
-          className={`absolute top-2 right-2 flex flex-col gap-2 transition-all duration-300 ${
-            isHovered ? "opacity-100 translate-x-0" : "opacity-0 translate-x-2"
+          className={`absolute inset-x-3 bottom-3 z-10 transition-all duration-300 ${
+            isHovered ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0 pointer-events-none"
           }`}
         >
-          {/* Wishlist */}
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              setIsWishlisted(!isWishlisted);
-            }}
-            className="w-8 h-8 rounded-full bg-white shadow-[var(--shadow-sm)] flex items-center justify-center hover:scale-110 transition-transform"
-            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          >
-            <FontAwesomeIcon
-              icon={isWishlisted ? faHeartSolid : faHeartOutline}
-              className="w-3.5 h-3.5"
-              style={{ color: isWishlisted ? "var(--error)" : "var(--muted-foreground)" }}
-            />
-          </button>
-
-          {/* Quick view */}
           <Link
             href={`/product/${slug}`}
-            className="w-8 h-8 rounded-full bg-white shadow-[var(--shadow-sm)] flex items-center justify-center hover:scale-110 transition-transform"
-            aria-label={`Quick view ${name}`}
+            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider bg-neutral-950/95 text-white hover:bg-black backdrop-blur-md shadow-lg transition-all"
           >
-            <FontAwesomeIcon
-              icon={faEye}
-              className="w-3.5 h-3.5"
-              style={{ color: "var(--muted-foreground)" }}
-            />
+            <FontAwesomeIcon icon={faShoppingCart} className="w-3.5 h-3.5" />
+            {inStock ? "Select Size & Buy" : "View Details"}
           </Link>
         </div>
-
-        {/* Quick add overlay */}
-        {inStock && (
-          <div
-            className={`absolute inset-x-0 bottom-0 transition-all duration-300 ${
-              isHovered ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
-            }`}
-          >
-            <Link
-              href={`/product/${slug}`}
-              className="flex items-center justify-center gap-2 w-full py-2.5 text-sm font-medium"
-              style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
-            >
-              <FontAwesomeIcon icon={faShoppingCart} className="w-3.5 h-3.5" />
-              Select Size
-            </Link>
-          </div>
-        )}
       </div>
 
-      {/* Content */}
-      <div className="p-3 md:p-4">
-        {/* Name */}
-        <Link href={`/product/${slug}`}>
-          <h3
-            className="font-medium text-sm md:text-base leading-snug mb-1 hover:text-[var(--primary)] transition-colors line-clamp-2"
-          >
-            {name}
-          </h3>
-        </Link>
+      {/* Product Content Details */}
+      <div className="p-4 pb-5 flex flex-col flex-1 justify-between bg-white min-h-[145px]">
+        <div>
+          {/* Category Tag */}
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-neutral-400">
+              {category?.name ?? "Footwear"}
+            </span>
+            {/* Swatch dots */}
+            {colors.length > 0 && (
+              <div className="flex items-center gap-1">
+                {colors.map(({ color, hex }) => (
+                  <span
+                    key={color}
+                    title={color}
+                    className="w-2.5 h-2.5 rounded-full border border-neutral-300 shadow-2xs"
+                    style={{ background: hex ?? "#888" }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
 
-        {/* Sizes preview */}
-        {sizes.length > 0 && (
-          <div className="flex gap-1 flex-wrap mb-2">
-            {sizes.map((size) => (
-              <span
-                key={size}
-                className="text-[10px] px-1.5 py-0.5 rounded border border-[var(--border)] text-[var(--muted-foreground)]"
-              >
-                {size}
+          {/* Product Name */}
+          <Link href={`/product/${slug}`} className="block group-hover:text-neutral-950">
+            <h3 className="font-bold text-sm sm:text-[15px] text-neutral-900 leading-snug tracking-tight mb-2 line-clamp-1">
+              {name}
+            </h3>
+          </Link>
+
+          {/* Available Sizes preview pills */}
+          {sizes.length > 0 && (
+            <div className="flex items-center gap-1 flex-wrap mb-3">
+              {sizes.map((size) => (
+                <span
+                  key={size}
+                  className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-neutral-100 text-neutral-600 border border-neutral-200/60"
+                >
+                  {size}
+                </span>
+              ))}
+              {variants.length > 5 && (
+                <span className="text-[10px] text-neutral-400 font-medium">+{variants.length - 5}</span>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Pricing Row */}
+        <div className="pt-3 mt-1 border-t border-neutral-100 flex items-center justify-between flex-wrap gap-x-2 gap-y-1.5 min-w-0">
+          <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5 min-w-0">
+            <span className="text-base font-black text-neutral-950 tracking-normal pl-0.5 whitespace-nowrap leading-tight">
+              {currencySymbol} {price.toLocaleString()}
+            </span>
+            {compareAtPrice && compareAtPrice > price && (
+              <span className="text-xs text-neutral-400 line-through font-medium whitespace-nowrap leading-tight">
+                {currencySymbol} {compareAtPrice.toLocaleString()}
               </span>
-            ))}
+            )}
           </div>
-        )}
-
-        {/* Colors */}
-        {colors.length > 0 && (
-          <div className="flex gap-1 mb-2">
-            {colors.map(({ color, hex }) => (
-              <div
-                key={color}
-                title={color}
-                className="w-4 h-4 rounded-full border border-[var(--border)]"
-                style={{ background: hex ?? "#888" }}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Price */}
-        <div className="flex items-baseline gap-2 mt-1">
-          <span className="price-current text-sm md:text-base">
-            {currencySymbol} {price.toLocaleString()}
-          </span>
-          {compareAtPrice && compareAtPrice > price && (
-            <span className="price-compare text-xs md:text-sm">
-              {currencySymbol} {compareAtPrice.toLocaleString()}
+          {discount && (
+            <span className="text-[11px] font-extrabold leading-tight text-rose-600 bg-rose-50 border border-rose-200/60 px-2 py-0.5 rounded-md whitespace-nowrap shrink-0 inline-flex items-center">
+              SAVE {discount}%
             </span>
           )}
         </div>

@@ -18,20 +18,20 @@ interface BadgeProps {
 }
 
 const variantClass: Record<BadgeVariant, string> = {
-  "new":         "badge badge-new",
-  "best-seller": "badge badge-best-seller",
-  "sale":        "badge badge-sale",
-  "success":     "badge badge-success",
-  "warning":     "badge badge-warning",
-  "error":       "badge badge-error",
-  "muted":       "badge badge-muted",
-  "primary":     "badge",
-  "secondary":   "badge",
+  "new":         "bg-neutral-900 text-white border border-neutral-700/50 shadow-sm",
+  "best-seller": "bg-amber-500 text-black font-extrabold shadow-sm",
+  "sale":        "bg-rose-600 text-white font-extrabold shadow-sm",
+  "success":     "bg-emerald-50 text-emerald-700 border border-emerald-200",
+  "warning":     "bg-amber-50 text-amber-800 border border-amber-200",
+  "error":       "bg-rose-50 text-rose-700 border border-rose-200",
+  "muted":       "bg-neutral-100 text-neutral-600 border border-neutral-200",
+  "primary":     "bg-neutral-900 text-white",
+  "secondary":   "bg-neutral-800 text-white",
 };
 
 export function Badge({ variant = "muted", children, className = "" }: BadgeProps) {
   return (
-    <span className={`${variantClass[variant]} ${className}`}>
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase backdrop-blur-xs transition-colors ${variantClass[variant]} ${className}`}>
       {children}
     </span>
   );

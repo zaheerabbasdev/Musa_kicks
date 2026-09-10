@@ -186,7 +186,7 @@ export default async function ShopPage({ searchParams }: PageProps) {
           )}
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-10 flex-wrap">
+            <nav aria-label="Catalog pagination" className="flex items-center justify-center gap-2 mt-12 mb-16 flex-wrap">
               {page > 1 && (
                 <Link
                   href={`/shop?${buildQueryString({ ...params, page: page - 1 })}`}
@@ -215,7 +215,7 @@ export default async function ShopPage({ searchParams }: PageProps) {
                   Next
                 </Link>
               )}
-            </div>
+            </nav>
           )}
         </div>
       </div>

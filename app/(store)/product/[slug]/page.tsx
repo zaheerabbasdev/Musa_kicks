@@ -4,6 +4,7 @@ import { getProductBySlug, getRelatedProducts } from "@/lib/services/product.ser
 import { getSettings } from "@/lib/services/settings.service";
 import { ProductGallery } from "@/components/products/ProductGallery";
 import { ProductGrid } from "@/components/products/ProductGrid";
+import { ProductCard } from "@/components/products/ProductCard";
 import { Badge } from "@/components/ui/Badge";
 import { AddToCartSection } from "@/components/products/AddToCartSection";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -51,7 +52,7 @@ export default async function ProductPage({ params }: PageProps) {
   const related = await getRelatedProducts(product.id, product.categoryId, 4).catch(() => []);
 
   return (
-    <div className="container-site py-8 md:py-14">
+    <div className="container-site py-10 md:py-16">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm mb-8" style={{ color: "var(--muted-foreground)" }}>
         <Link href="/" className="hover:text-[var(--primary)]">Home</Link>
@@ -101,22 +102,19 @@ export default async function ProductPage({ params }: PageProps) {
           </p>
 
           {/* Price */}
-          <div className="flex items-baseline gap-3">
-            <span className="text-3xl font-bold">
+          <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 min-w-0">
+            <span className="text-3xl font-extrabold text-neutral-950 tracking-normal pl-0.5 whitespace-nowrap">
               {currencySymbol} {price.toLocaleString()}
             </span>
             {compareAtPrice && compareAtPrice > price && (
-              <>
-                <span className="price-compare text-lg">
+              <div className="flex items-center gap-2">
+                <span className="text-lg text-neutral-400 line-through font-medium whitespace-nowrap">
                   {currencySymbol} {compareAtPrice.toLocaleString()}
                 </span>
-                <span
-                  className="text-sm font-semibold px-2 py-0.5 rounded-full"
-                  style={{ background: "var(--error-bg)", color: "var(--error)" }}
-                >
-                  -{discount}%
+                <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full whitespace-nowrap">
+                  SAVE {discount}%
                 </span>
-              </>
+              </div>
             )}
           </div>
 
@@ -171,10 +169,36 @@ export default async function ProductPage({ params }: PageProps) {
 
       {/* Related Products */}
       {related.length > 0 && (
-        <div>
-          <h2 className="text-2xl md:text-3xl font-display font-bold mb-8">You May Also Like</h2>
-          <ProductGrid products={related} columns={4} currencySymbol={currencySymbol} />
-        </div>
+        <section className="pt-12 border-t border-neutral-200/80">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl md:text-3xl font-display font-bold">You May Also Like</h2>
+            <Link href="/shop" className="text-sm font-bold text-neutral-900 hover:text-orange-600 transition-colors">
+              Explore More →
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 items-stretch">
+            {related.map((p) => {
+              const img = p.images[0];
+              return (
+                <ProductCard
+                  key={p.id}
+                  id={p.id}
+                  slug={p.slug}
+                  name={p.name}
+                  price={Number(p.price)}
+                  compareAtPrice={p.compareAtPrice ? Number(p.compareAtPrice) : null}
+                  image={img ?? null}
+                  category={p.category}
+                  isNew={p.isNewArrival}
+                  isBestSeller={p.isBestSeller}
+                  isFeatured={p.isFeatured}
+                  variants={p.variants}
+                  currencySymbol={currencySymbol}
+                />
+              );
+            })}
+          </div>
+        </section>
       )}
     </div>
   );

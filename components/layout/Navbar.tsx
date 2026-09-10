@@ -40,6 +40,17 @@ export function Navbar() {
     setIsSearchOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
   const isAdminPage = pathname.startsWith("/admin");
   if (isAdminPage) return null;
 
@@ -48,8 +59,8 @@ export function Navbar() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-[var(--card)] shadow-[var(--shadow-md)] backdrop-blur-md"
-            : "bg-[var(--card)]"
+            ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-neutral-200/80"
+            : "bg-white/90 backdrop-blur-sm border-b border-neutral-100"
         }`}
         style={{ height: "var(--nav-height)" }}
       >
@@ -57,30 +68,26 @@ export function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 shrink-0"
+            className="flex items-center gap-1.5 shrink-0 group"
             aria-label="Musa Kicks Home"
           >
-            <span
-              className="text-2xl font-display font-bold tracking-tight"
-              style={{ color: "var(--primary)" }}
-            >
+            <span className="text-2xl font-black tracking-tighter text-neutral-950">
               MUSA
             </span>
-            <span
-              className="text-2xl font-display font-bold tracking-tight"
-              style={{ color: "var(--accent-foreground)" }}
-            >
+            <span className="text-2xl font-black tracking-tighter text-orange-600">
               KICKS
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6" aria-label="Main navigation">
+          <nav className="hidden md:flex items-center gap-7" aria-label="Main navigation">
             {siteConfig.nav.main.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`nav-link ${pathname === item.href || pathname.startsWith(item.href + "?") ? "active" : ""}`}
+                className={`nav-link text-xs font-bold uppercase tracking-wider ${
+                  pathname === item.href || pathname.startsWith(item.href + "?") ? "active" : ""
+                }`}
               >
                 {item.label}
               </Link>
@@ -89,21 +96,24 @@ export function Navbar() {
             {/* Categories dropdown */}
             <div className="relative group">
               <button
-                className="nav-link flex items-center gap-1"
+                className="nav-link text-xs font-bold uppercase tracking-wider flex items-center gap-1.5"
                 aria-haspopup="true"
               >
                 Categories
-                <FontAwesomeIcon icon={faChevronDown} className="w-3 h-3 transition-transform group-hover:rotate-180" />
+                <FontAwesomeIcon icon={faChevronDown} className="w-2.5 h-2.5 transition-transform group-hover:rotate-180" />
               </button>
-              <div className="absolute top-full left-0 mt-2 w-48 bg-[var(--card)] border border-[var(--border)] rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
+              <div
+                className="absolute top-full left-0 mt-2 w-56 border border-neutral-200/90 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50"
+                style={{ backgroundColor: "#ffffff" }}
+              >
                 {siteConfig.nav.categories.map((cat) => (
                   <Link
                     key={cat.href}
                     href={cat.href}
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-[var(--muted)] transition-colors"
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-neutral-800 hover:text-neutral-950 hover:bg-neutral-100 transition-colors"
                   >
-                    <span>{cat.icon}</span>
-                    {cat.label}
+                    <span>{cat.label}</span>
+                    <span className="text-neutral-400 text-xs">→</span>
                   </Link>
                 ))}
               </div>
@@ -194,7 +204,7 @@ export function Navbar() {
             {/* Mobile menu toggle */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="btn btn-ghost btn-icon md:hidden"
+              className="btn btn-ghost btn-icon md:!hidden"
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMenuOpen}
             >
@@ -270,8 +280,9 @@ export function Navbar() {
       {/* Mobile overlay */}
       {isMenuOpen && (
         <div
-          className="overlay visible fixed inset-0 z-[140] md:hidden"
+          className="fixed inset-0 z-[140] bg-neutral-950/75 backdrop-blur-sm md:hidden transition-all duration-300"
           onClick={() => setIsMenuOpen(false)}
+          aria-label="Close menu backdrop"
         />
       )}
 

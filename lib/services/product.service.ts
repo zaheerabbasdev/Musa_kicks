@@ -138,7 +138,7 @@ export async function getBestSellers(limit = 8) {
 }
 
 export async function getRelatedProducts(productId: string, categoryId: string, limit = 4) {
-  return prisma.product.findMany({
+  const related = await prisma.product.findMany({
     where: {
       isActive: true,
       categoryId,
@@ -151,6 +151,27 @@ export async function getRelatedProducts(productId: string, categoryId: string, 
       variants: { select: { size: true, color: true, stock: true } },
     },
   });
+
+  if (related.length < limit) {
+    const needed = limit - related.length;
+    const existingIds = [productId, ...related.map((p) => p.id)];
+    const additional = await prisma.product.findMany({
+      where: {
+        isActive: true,
+        id: { notIn: existingIds },
+      },
+      take: needed,
+      orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+      include: {
+        images: { where: { isPrimary: true }, take: 1 },
+        category: { select: { name: true, slug: true } },
+        variants: { select: { size: true, color: true, stock: true } },
+      },
+    });
+    return [...related, ...additional];
+  }
+
+  return related;
 }
 
 export async function getAllProductSlugs() {

@@ -36,12 +36,12 @@ export const siteConfig = {
       { label: "About", href: "/about" },
     ],
     categories: [
-      { label: "Sneakers", href: "/shop/sneakers", icon: "🥿" },
-      { label: "Casual", href: "/shop/casual", icon: "👟" },
-      { label: "Running", href: "/shop/running", icon: "🏃" },
-      { label: "Formal", href: "/shop/formal", icon: "👞" },
-      { label: "Boots", href: "/shop/boots", icon: "🥾" },
-      { label: "Slides", href: "/shop/slides", icon: "🩴" },
+      { label: "Sneakers", href: "/shop/sneakers", icon: "" },
+      { label: "Casual", href: "/shop/casual", icon: "" },
+      { label: "Running", href: "/shop/running", icon: "" },
+      { label: "Formal", href: "/shop/formal", icon: "" },
+      { label: "Boots", href: "/shop/boots", icon: "" },
+      { label: "Slides", href: "/shop/slides", icon: "" },
     ],
     account: [
       { label: "My Orders", href: "/account/orders" },

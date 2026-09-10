@@ -11,31 +11,23 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}>
+    <footer className="bg-neutral-950 text-white border-t border-white/10 relative z-10 clear-both mt-auto">
       {/* Loyalty Banner Strip */}
-      <div
-        className="py-4 text-center text-sm font-medium tracking-wide"
-        style={{ background: "var(--accent)", color: "var(--accent-foreground)" }}
-      >
-        🎁 Shop 4 times and get a Special Gift — Our loyalty reward for you!
+      <div className="py-3 text-center text-xs font-extrabold uppercase tracking-widest bg-neutral-900/90 border-b border-white/10 text-amber-300">
+        ✦ VIP LOYALTY CLUB: SHOP 4 TIMES TO EARN A COMPLIMENTARY GIFT ✦
       </div>
 
       {/* Main Footer */}
-      <div className="container-site py-12 md:py-16">
+      <div className="container-site py-16 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <div className="mb-4">
-              <span className="text-2xl font-display font-bold tracking-tight">MUSA</span>
-              <span
-                className="text-2xl font-display font-bold tracking-tight"
-                style={{ color: "var(--soft-beige, #D8C3A5)" }}
-              >
-                {" "}KICKS
-              </span>
+            <div className="flex items-center gap-1.5 mb-4">
+              <span className="text-2xl font-black tracking-tighter text-white">MUSA</span>
+              <span className="text-2xl font-black tracking-tighter text-orange-500">KICKS</span>
             </div>
-            <p className="text-sm leading-relaxed mb-6 opacity-75 max-w-[200px]">
-              {siteConfig.description.substring(0, 100)}...
+            <p className="text-sm leading-relaxed mb-6 text-neutral-400 max-w-[240px]">
+              {siteConfig.description.substring(0, 110)}...
             </p>
             <div className="flex gap-3">
               <a

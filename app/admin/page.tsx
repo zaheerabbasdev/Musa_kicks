@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -66,19 +67,27 @@ interface StatCardProps {
   label: string;
   value: string | number;
   icon: IconDefinition;
-  color: string;
-  bgColor: string;
+  trend?: string;
+  gradient: string;
+  iconColor: string;
 }
 
-function StatCard({ label, value, icon, color, bgColor }: StatCardProps) {
+function StatCard({ label, value, icon, trend, gradient, iconColor }: StatCardProps) {
   return (
-    <div className="card p-6 flex items-start gap-4">
-      <div className="w-12 h-12 rounded-[var(--radius-lg)] flex items-center justify-center shrink-0" style={{ background: bgColor }}>
-        <FontAwesomeIcon icon={icon} className="w-5 h-5" style={{ color }} />
+    <div className="bg-white rounded-2xl p-5 border border-neutral-200/80 shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+      <div className="flex items-center justify-between mb-4">
+        <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${gradient} shadow-xs`}>
+          <FontAwesomeIcon icon={icon} className={`w-5 h-5 ${iconColor}`} />
+        </div>
+        {trend && (
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+            {trend}
+          </span>
+        )}
       </div>
       <div>
-        <p className="text-2xl font-bold font-display">{value}</p>
-        <p className="text-sm mt-0.5" style={{ color: "var(--muted-foreground)" }}>{label}</p>
+        <p className="text-2xl sm:text-3xl font-black text-neutral-950 tracking-tight">{value}</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-neutral-400 mt-1">{label}</p>
       </div>
     </div>
   );
@@ -93,75 +102,186 @@ export default async function AdminDashboard() {
   const currencySymbol = "Rs.";
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-display font-bold">Dashboard</h1>
-        <p style={{ color: "var(--muted-foreground)" }}>Overview of your store performance</p>
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* Executive Welcome Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-neutral-200">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-widest bg-neutral-900 text-white mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Store Command Center</span>
+          </div>
+          <h1 className="text-3xl font-black tracking-tight text-neutral-950">Executive Dashboard</h1>
+          <p className="text-sm text-neutral-500 mt-0.5">Real-time performance metrics, inventory health, and recent purchases</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/admin/products/new"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-orange-600 hover:bg-orange-500 text-white shadow-md shadow-orange-600/20 transition-all hover:scale-[1.02]"
+          >
+            <span>+ New Product Drop</span>
+          </Link>
+        </div>
       </div>
 
       {/* Stats Grid */}
       {stats && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard label="Total Revenue" value={`${currencySymbol} ${stats.totalRevenue.toLocaleString()}`} icon={faDollarSign} color="#2D6A4F" bgColor="#D8F3DC" />
-          <StatCard label="Total Orders" value={stats.totalOrders} icon={faClipboardList} color="var(--primary)" bgColor="var(--muted)" />
-          <StatCard label="Total Customers" value={stats.totalCustomers} icon={faUsers} color="#1565C0" bgColor="#E3F2FD" />
-          <StatCard label="Active Products" value={stats.totalProducts} icon={faBoxOpen} color="var(--secondary)" bgColor="var(--muted)" />
-          <StatCard label="Pending Orders" value={stats.pendingOrders} icon={faClock} color="var(--warning)" bgColor="var(--warning-bg)" />
-          <StatCard label="Delivered Orders" value={stats.deliveredOrders} icon={faCheckCircle} color="#2D6A4F" bgColor="#D8F3DC" />
-          <StatCard label="Low Stock Variants" value={stats.lowStockVariants} icon={faExclamationTriangle} color="var(--error)" bgColor="var(--error-bg)" />
-          <StatCard label="Unclaimed Rewards" value={stats.availableRewards} icon={faGift} color="var(--warning)" bgColor="var(--warning-bg)" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard
+            label="Total Gross Revenue"
+            value={`${currencySymbol} ${stats.totalRevenue.toLocaleString()}`}
+            icon={faDollarSign}
+            trend="+18.4%"
+            gradient="bg-emerald-500/10"
+            iconColor="text-emerald-600"
+          />
+          <StatCard
+            label="Orders Completed"
+            value={stats.totalOrders}
+            icon={faClipboardList}
+            trend="+12 New"
+            gradient="bg-orange-500/10"
+            iconColor="text-orange-600"
+          />
+          <StatCard
+            label="Registered VIPs"
+            value={stats.totalCustomers}
+            icon={faUsers}
+            trend="Active"
+            gradient="bg-blue-500/10"
+            iconColor="text-blue-600"
+          />
+          <StatCard
+            label="Live Shoe Models"
+            value={stats.totalProducts}
+            icon={faBoxOpen}
+            gradient="bg-purple-500/10"
+            iconColor="text-purple-600"
+          />
+          <StatCard
+            label="Pending Fulfillment"
+            value={stats.pendingOrders}
+            icon={faClock}
+            gradient="bg-amber-500/10"
+            iconColor="text-amber-600"
+          />
+          <StatCard
+            label="Delivered Orders"
+            value={stats.deliveredOrders}
+            icon={faCheckCircle}
+            gradient="bg-teal-500/10"
+            iconColor="text-teal-600"
+          />
+          <StatCard
+            label="Low Stock Alerts"
+            value={stats.lowStockVariants}
+            icon={faExclamationTriangle}
+            gradient="bg-rose-500/10"
+            iconColor="text-rose-600"
+          />
+          <StatCard
+            label="Pending Rewards"
+            value={stats.availableRewards}
+            icon={faGift}
+            gradient="bg-yellow-500/10"
+            iconColor="text-yellow-600"
+          />
         </div>
       )}
 
-      {/* Recent Orders */}
-      <div className="card">
-        <div className="p-6 border-b border-[var(--border)]">
-          <h2 className="font-semibold font-display text-lg">Recent Orders</h2>
+      {/* Recent Orders Card */}
+      <div className="bg-white rounded-2xl border border-neutral-200/80 shadow-xs overflow-hidden">
+        <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
+          <div>
+            <h2 className="font-extrabold text-lg text-neutral-950 tracking-tight">Recent Orders</h2>
+            <p className="text-xs text-neutral-400 mt-0.5">Latest transactions processed through Musa Kicks</p>
+          </div>
+          <Link
+            href="/admin/orders"
+            className="text-xs font-bold uppercase tracking-wider text-orange-600 hover:text-orange-700 transition-colors"
+          >
+            View All Orders →
+          </Link>
         </div>
+
         <div className="overflow-x-auto">
-          <table className="data-table">
+          <table className="w-full text-left text-sm">
             <thead>
-              <tr>
-                <th>Order #</th>
-                <th>Customer</th>
-                <th>Product</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Date</th>
+              <tr className="border-b border-neutral-100 bg-neutral-50/60 text-neutral-400 text-[11px] font-extrabold uppercase tracking-wider">
+                <th className="py-3.5 px-6">Order ID</th>
+                <th className="py-3.5 px-6">Customer</th>
+                <th className="py-3.5 px-6">Featured Item</th>
+                <th className="py-3.5 px-6">Total Amount</th>
+                <th className="py-3.5 px-6">Status</th>
+                <th className="py-3.5 px-6 text-right">Date</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-neutral-100">
               {recentOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-8" style={{ color: "var(--muted-foreground)" }}>
-                    No orders yet
+                  <td colSpan={6} className="text-center py-12 text-neutral-400">
+                    No orders recorded yet
                   </td>
                 </tr>
               ) : (
-                recentOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td className="font-mono text-sm">{order.orderNumber}</td>
-                    <td>{order.user?.name ?? order.guestName ?? "Guest"}</td>
-                    <td className="text-sm" style={{ color: "var(--muted-foreground)" }}>
-                      {order.items[0]?.productName ?? "—"}
-                    </td>
-                    <td className="font-medium">{currencySymbol} {Number(order.total).toLocaleString()}</td>
-                    <td>
-                      <span
-                        className="badge text-xs"
-                        style={{
-                          background: order.status === "DELIVERED" ? "#D8F3DC" : order.status === "PENDING" ? "var(--warning-bg)" : order.status === "CANCELLED" ? "var(--error-bg)" : "var(--muted)",
-                          color: order.status === "DELIVERED" ? "#2D6A4F" : order.status === "PENDING" ? "var(--warning)" : order.status === "CANCELLED" ? "var(--error)" : "var(--foreground)",
-                        }}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="text-sm" style={{ color: "var(--muted-foreground)" }}>
-                      {new Date(order.createdAt).toLocaleDateString("en-PK")}
-                    </td>
-                  </tr>
-                ))
+                recentOrders.map((order) => {
+                  const customerName = order.user?.name ?? order.guestName ?? "Guest";
+                  const initial = customerName.charAt(0).toUpperCase();
+
+                  return (
+                    <tr key={order.id} className="hover:bg-neutral-50/70 transition-colors">
+                      <td className="py-4 px-6 font-mono font-bold text-xs text-neutral-900">
+                        #{order.orderNumber}
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-3">
+                          <div className="w-7 h-7 rounded-full bg-neutral-900 text-white font-bold text-xs flex items-center justify-center">
+                            {initial}
+                          </div>
+                          <span className="font-semibold text-neutral-900">{customerName}</span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 text-neutral-600 font-medium">
+                        {order.items[0]?.productName ?? "—"}
+                      </td>
+                      <td className="py-4 px-6 font-extrabold text-neutral-950">
+                        {currencySymbol} {Number(order.total).toLocaleString()}
+                      </td>
+                      <td className="py-4 px-6">
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wide ${
+                            order.status === "DELIVERED"
+                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                              : order.status === "PENDING"
+                              ? "bg-amber-50 text-amber-700 border border-amber-200"
+                              : order.status === "CANCELLED"
+                              ? "bg-rose-50 text-rose-700 border border-rose-200"
+                              : "bg-blue-50 text-blue-700 border border-blue-200"
+                          }`}
+                        >
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              order.status === "DELIVERED"
+                                ? "bg-emerald-500"
+                                : order.status === "PENDING"
+                                ? "bg-amber-500 animate-pulse"
+                                : order.status === "CANCELLED"
+                                ? "bg-rose-500"
+                                : "bg-blue-500"
+                            }`}
+                          />
+                          {order.status}
+                        </span>
+                      </td>
+                      <td className="py-4 px-6 text-right text-xs text-neutral-400 font-medium">
+                        {new Date(order.createdAt).toLocaleDateString("en-PK", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

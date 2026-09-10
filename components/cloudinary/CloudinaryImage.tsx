@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useState, useEffect } from "react";
 import { productCardUrl, productDetailUrl, productThumbnailUrl } from "@/lib/cloudinary/transformations";
 
 interface CloudinaryImageProps {
@@ -33,38 +36,44 @@ export function CloudinaryImage({
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
   const isCloudinaryConfigured = Boolean(cloudName && cloudName !== "placeholder");
 
-  let imageSrc: string;
-
+  let initialSrc = DEFAULT_FALLBACK;
   if (src && (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("/"))) {
-    imageSrc = src;
+    initialSrc = src;
   } else if (publicId && isCloudinaryConfigured) {
     if (preset === "card") {
-      imageSrc = productCardUrl(publicId);
+      initialSrc = productCardUrl(publicId);
     } else if (preset === "detail") {
-      imageSrc = productDetailUrl(publicId);
+      initialSrc = productDetailUrl(publicId);
     } else if (preset === "thumbnail") {
-      imageSrc = productThumbnailUrl(publicId);
+      initialSrc = productThumbnailUrl(publicId);
     } else {
-      imageSrc = `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/${publicId}`;
+      initialSrc = `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/${publicId}`;
     }
   } else if (src) {
-    imageSrc = src;
-  } else {
-    imageSrc = DEFAULT_FALLBACK;
+    initialSrc = src;
   }
+
+  const [imageSrc, setImageSrc] = useState(initialSrc);
+
+  useEffect(() => {
+    setImageSrc(initialSrc);
+  }, [initialSrc]);
 
   if (fill) {
     return (
       <Image
         src={imageSrc}
-        alt={alt}
+        alt={alt || "Footwear product"}
         fill
-        className={`${className}`}
+        className={className}
         style={{ objectFit }}
         priority={priority}
         sizes={sizes}
-        onError={(e) => {
-          (e.target as HTMLImageElement).src = DEFAULT_FALLBACK;
+        unoptimized={true}
+        onError={() => {
+          if (imageSrc !== DEFAULT_FALLBACK) {
+            setImageSrc(DEFAULT_FALLBACK);
+          }
         }}
       />
     );
@@ -73,14 +82,17 @@ export function CloudinaryImage({
   return (
     <Image
       src={imageSrc}
-      alt={alt}
+      alt={alt || "Footwear product"}
       width={width}
       height={height}
       className={className}
       priority={priority}
       sizes={sizes}
-      onError={(e) => {
-        (e.target as HTMLImageElement).src = DEFAULT_FALLBACK;
+      unoptimized={true}
+      onError={() => {
+        if (imageSrc !== DEFAULT_FALLBACK) {
+          setImageSrc(DEFAULT_FALLBACK);
+        }
       }}
     />
   );

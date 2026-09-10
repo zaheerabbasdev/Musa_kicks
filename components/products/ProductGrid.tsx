@@ -25,8 +25,8 @@ interface ProductGridProps {
 
 const colClass = {
   2: "grid-cols-2",
-  3: "grid-cols-2 md:grid-cols-3",
-  4: "grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+  3: "grid-cols-2 sm:grid-cols-3",
+  4: "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4",
 };
 
 export function ProductGrid({
@@ -36,9 +36,11 @@ export function ProductGrid({
   currencySymbol = "Rs.",
   columns = 4,
 }: ProductGridProps) {
+  const gridClasses = `grid ${colClass[columns] ?? colClass[4]} gap-4 md:gap-6 items-stretch`;
+
   if (isLoading) {
     return (
-      <div className={`grid ${colClass[columns]} gap-4 md:gap-6`}>
+      <div className={gridClasses}>
         {Array.from({ length: skeletonCount }).map((_, i) => (
           <ProductCardSkeleton key={i} />
         ))}
@@ -47,7 +49,7 @@ export function ProductGrid({
   }
 
   return (
-    <div className={`grid ${colClass[columns]} gap-4 md:gap-6`}>
+    <div className={gridClasses}>
       {products.map((product) => {
         const image = product.images[0];
         return (

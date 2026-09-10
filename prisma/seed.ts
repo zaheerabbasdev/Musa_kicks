@@ -35,21 +35,21 @@ function createVariants(colors: { name: string; hex: string }[], productSku: str
 
 // Placeholder Cloudinary images (use real ones after upload)
 const PLACEHOLDER_IMAGES = [
-  { url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800", pid: "musa-kicks/products/sneakers/shoe-1" },
-  { url: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800", pid: "musa-kicks/products/sneakers/shoe-2" },
-  { url: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=800", pid: "musa-kicks/products/sneakers/shoe-3" },
-  { url: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800", pid: "musa-kicks/products/sneakers/shoe-4" },
-  { url: "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=800", pid: "musa-kicks/products/sneakers/shoe-5" },
-  { url: "https://images.unsplash.com/photo-1584735175315-9d5df23be7be?w=800", pid: "musa-kicks/products/casual/shoe-6" },
-  { url: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800", pid: "musa-kicks/products/casual/shoe-7" },
-  { url: "https://images.unsplash.com/photo-1515347619252-60a4bf4fff4f?w=800", pid: "musa-kicks/products/running/shoe-8" },
-  { url: "https://images.unsplash.com/photo-1539185441755-769473a23570?w=800", pid: "musa-kicks/products/formal/shoe-9" },
-  { url: "https://images.unsplash.com/photo-1455487801534-34e37e7c8bba?w=800", pid: "musa-kicks/products/boots/shoe-10" },
-  { url: "https://images.unsplash.com/photo-1517438476312-10d79c077509?w=800", pid: "musa-kicks/products/slides/shoe-11" },
-  { url: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800", pid: "musa-kicks/products/sneakers/shoe-12" },
-  { url: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800", pid: "musa-kicks/products/casual/shoe-13" },
-  { url: "https://images.unsplash.com/photo-1516478177764-9fe5bd7e9717?w=800", pid: "musa-kicks/products/running/shoe-14" },
-  { url: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800", pid: "musa-kicks/products/sneakers/shoe-15" },
+  { url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80", pid: "musa-kicks/products/sneakers/shoe-1" },
+  { url: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80", pid: "musa-kicks/products/sneakers/shoe-2" },
+  { url: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=800&q=80", pid: "musa-kicks/products/sneakers/shoe-3" },
+  { url: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800&q=80", pid: "musa-kicks/products/sneakers/shoe-4" },
+  { url: "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=800&q=80", pid: "musa-kicks/products/sneakers/shoe-5" },
+  { url: "https://images.unsplash.com/photo-1512374382149-233c42b6a83b?w=800&q=80", pid: "musa-kicks/products/casual/shoe-6" },
+  { url: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&q=80", pid: "musa-kicks/products/casual/shoe-7" },
+  { url: "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=800&q=80", pid: "musa-kicks/products/running/shoe-8" },
+  { url: "https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=800&q=80", pid: "musa-kicks/products/formal/shoe-9" },
+  { url: "https://images.unsplash.com/photo-1638247025967-b4e38f787b76?w=800&q=80", pid: "musa-kicks/products/boots/shoe-10" },
+  { url: "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=800&q=80", pid: "musa-kicks/products/slides/shoe-11" },
+  { url: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&q=80", pid: "musa-kicks/products/sneakers/shoe-12" },
+  { url: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&q=80", pid: "musa-kicks/products/casual/shoe-13" },
+  { url: "https://images.unsplash.com/photo-1516478177764-9fe5bd7e9717?w=800&q=80", pid: "musa-kicks/products/running/shoe-14" },
+  { url: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&q=80", pid: "musa-kicks/products/sneakers/shoe-15" },
 ];
 
 async function main() {

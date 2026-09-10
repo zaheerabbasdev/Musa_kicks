@@ -49,13 +49,13 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Product</th>
-                <th>SKU</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th className="text-left">Product</th>
+                <th className="text-left">SKU</th>
+                <th className="text-left">Category</th>
+                <th className="text-right">Price</th>
+                <th className="text-right">Stock</th>
+                <th className="text-center">Status</th>
+                <th className="text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -72,7 +72,7 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
                   const primaryImage = product.images[0];
                   return (
                     <tr key={product.id}>
-                      <td>
+                      <td className="text-left">
                         <div className="flex items-center gap-3">
                           {primaryImage ? (
                             <img
@@ -88,21 +88,21 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
                           <span className="font-medium">{product.name}</span>
                         </div>
                       </td>
-                      <td className="font-mono text-sm">{product.sku}</td>
-                      <td>{product.category.name}</td>
-                      <td>Rs. {Number(product.price).toLocaleString()}</td>
-                      <td>
+                      <td className="text-left font-mono text-sm">{product.sku}</td>
+                      <td className="text-left">{product.category.name}</td>
+                      <td className="text-right font-medium">Rs. {Number(product.price).toLocaleString()}</td>
+                      <td className="text-right font-semibold">
                         <span style={{ color: totalStock === 0 ? "var(--error)" : totalStock <= 5 ? "var(--warning)" : "inherit" }}>
                           {totalStock}
                         </span>
                       </td>
-                      <td>
+                      <td className="text-center">
                         <Badge variant={product.isActive ? "success" : "muted"}>
                           {product.isActive ? "Active" : "Inactive"}
                         </Badge>
                       </td>
-                      <td>
-                        <div className="flex gap-2">
+                      <td className="text-right">
+                        <div className="flex justify-end gap-2">
                           <Link
                             href={`/product/${product.slug}`}
                             target="_blank"
