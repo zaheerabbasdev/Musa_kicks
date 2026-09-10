@@ -7,6 +7,7 @@ import {
   faShoppingBag,
   faGift,
   faHeart,
+  faLocationDot,
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -19,6 +20,7 @@ const ACCOUNT_NAV = [
   { href: "/account/profile", label: "My Profile", icon: faUser },
   { href: "/account/orders", label: "My Orders", icon: faShoppingBag },
   { href: "/account/rewards", label: "Loyalty Rewards", icon: faGift },
+  { href: "/account/addresses", label: "My Addresses", icon: faLocationDot },
   { href: "/wishlist", label: "Wishlist", icon: faHeart },
 ];
 
