@@ -39,7 +39,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
   const [uploadingImages, setUploadingImages] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<string[]>(
-    initialData?.images?.map((img: any) => img.url) ?? []
+    initialData?.images?.map((img: any) => img.url ?? img.imageUrl) ?? []
   );
 
   const [variants, setVariants] = useState<
