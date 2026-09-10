@@ -84,12 +84,17 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
 
         const signatureResponse = await fetch("/api/cloudinary/sign", {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({}),
         });
 
         if (!signatureResponse.ok) {
-          throw new Error("Could not prepare the image upload.");
+          const responseData = await signatureResponse.json().catch(() => null);
+          throw new Error(
+            responseData?.error ??
+              `Could not prepare the image upload (${signatureResponse.status}).`
+          );
         }
 
         const signature = await signatureResponse.json();
@@ -102,7 +107,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
 
         const uploadResponse = await fetch(
           `https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`,
-          { method: "POST", body: formData }
+          { method: "POST", credentials: "omit", body: formData }
         );
 
         if (!uploadResponse.ok) {
@@ -165,6 +170,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
         initialData ? `/api/admin/products/${initialData.id}` : "/api/admin/products",
         {
           method: initialData ? "PUT" : "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         }
