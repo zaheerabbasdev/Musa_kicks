@@ -8,6 +8,7 @@ import { faHeart as faHeartOutline } from "@fortawesome/free-regular-svg-icons";
 import { CloudinaryImage } from "@/components/cloudinary/CloudinaryImage";
 import { Badge } from "@/components/ui/Badge";
 import { useCartStore } from "@/store/cart.store";
+import { useWishlistStore } from "@/store/wishlist.store";
 
 interface ProductCardProps {
   id: string;
@@ -63,11 +64,13 @@ export function ProductCard({
   category,
   isNew,
   isBestSeller,
+  isFeatured,
   variants = [],
   currencySymbol = "Rs.",
 }: ProductCardProps) {
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const isWishlisted = useWishlistStore((state) => state.isInWishlist(id));
+  const toggleWishlist = useWishlistStore((state) => state.toggleItem);
 
   const discount =
     compareAtPrice && compareAtPrice > price
@@ -134,7 +137,23 @@ export function ProductCard({
         <button
           onClick={(e) => {
             e.preventDefault();
-            setIsWishlisted(!isWishlisted);
+            toggleWishlist({
+              id,
+              slug,
+              name,
+              price,
+              compareAtPrice: compareAtPrice ?? null,
+              images: image ? [{
+                publicId: image.publicId,
+                imageUrl: image.imageUrl,
+                altText: image.altText,
+              }] : [],
+              category: category ?? null,
+              isNewArrival: Boolean(isNew),
+              isBestSeller: Boolean(isBestSeller),
+              isFeatured: Boolean(isFeatured),
+              variants,
+            });
           }}
           className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md shadow-md border border-white/60 flex items-center justify-center hover:scale-110 active:scale-95 transition-all text-neutral-700 hover:text-rose-600"
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}

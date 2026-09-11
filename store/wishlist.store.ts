@@ -2,13 +2,34 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { ProductWithImages } from "@/types";
+export type WishlistItem = {
+  id: string;
+  slug: string;
+  name: string;
+  price: number;
+  compareAtPrice: number | null;
+  images: {
+    publicId: string;
+    imageUrl: string;
+    altText?: string | null;
+  }[];
+  category: { name: string; slug: string } | null;
+  isNewArrival: boolean;
+  isBestSeller: boolean;
+  isFeatured: boolean;
+  variants: {
+    size: string;
+    color: string;
+    colorHex?: string | null;
+    stock: number;
+  }[];
+};
 
 interface WishlistStore {
-  items: ProductWithImages[];
-  addItem: (product: ProductWithImages) => void;
+  items: WishlistItem[];
+  addItem: (product: WishlistItem) => void;
   removeItem: (productId: string) => void;
-  toggleItem: (product: ProductWithImages) => void;
+  toggleItem: (product: WishlistItem) => void;
   isInWishlist: (productId: string) => boolean;
   clearWishlist: () => void;
 }
