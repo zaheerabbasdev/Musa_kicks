@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input } from "@/components/ui/Input";
@@ -38,7 +38,12 @@ function LoginForm() {
     if (result?.error) {
       setAuthError("Invalid email or password");
     } else {
-      router.push(callbackUrl);
+      const session = await getSession();
+      const destination =
+        !searchParams.get("callbackUrl") && session?.user?.role === "ADMIN"
+          ? "/admin"
+          : callbackUrl;
+      router.push(destination);
       router.refresh();
     }
   };
