@@ -2,7 +2,7 @@
  * Musa Kicks — Site Configuration
  *
  * Static site-wide metadata, navigation links, social links.
- * Dynamic settings (WhatsApp number, loyalty config) are stored
+ * Dynamic settings (such as the WhatsApp number) are stored
  * in SiteSettings table and fetched from the database.
  */
 
@@ -10,7 +10,7 @@ export const siteConfig = {
   name: "Musa Kicks",
   tagline: "Step Into Your Style",
   description:
-    "Premium footwear designed for people who move differently. Explore our collection of sneakers, casual, running, formal, boots, and slides.",
+    "Thoughtfully selected products designed to fit the way you live. Explore our latest collections, everyday essentials, and standout finds.",
   url: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
 
   brand: {
@@ -37,17 +37,14 @@ export const siteConfig = {
       { label: "Contact", href: "/contact" },
     ],
     categories: [
-      { label: "Sneakers", href: "/shop/sneakers", icon: "" },
-      { label: "Casual", href: "/shop/casual", icon: "" },
-      { label: "Running", href: "/shop/running", icon: "" },
-      { label: "Formal", href: "/shop/formal", icon: "" },
-      { label: "Boots", href: "/shop/boots", icon: "" },
-      { label: "Slides", href: "/shop/slides", icon: "" },
+      { label: "New Collection", href: "/shop?sort=newest", icon: "" },
+      { label: "Everyday Essentials", href: "/shop", icon: "" },
+      { label: "Featured Finds", href: "/shop?sort=featured", icon: "" },
+      { label: "Best Sellers", href: "/shop?sort=popular", icon: "" },
     ],
     account: [
       { label: "My Orders", href: "/account/orders" },
       { label: "My Wishlist", href: "/wishlist" },
-      { label: "My Rewards", href: "/account/rewards" },
       { label: "My Profile", href: "/account/profile" },
       { label: "My Addresses", href: "/account/addresses" },
     ],
@@ -55,7 +52,7 @@ export const siteConfig = {
 
   footer: {
     shop: [
-      { label: "All Shoes", href: "/shop" },
+      { label: "All Products", href: "/shop" },
       { label: "New Arrivals", href: "/shop?sort=newest" },
       { label: "Best Sellers", href: "/shop?sort=popular" },
       { label: "Sale", href: "/shop?sale=true" },
@@ -64,21 +61,13 @@ export const siteConfig = {
       { label: "FAQ", href: "/faq" },
       { label: "Contact Us", href: "/contact" },
       { label: "Shipping Info", href: "/faq#shipping" },
-      { label: "Returns", href: "/faq#returns" },
+      { label: "Refund and Return Policy", href: "/return-refund" },
     ],
     company: [
       { label: "About Us", href: "/about" },
-      { label: "Loyalty Program", href: "/account/rewards" },
       { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms of Service", href: "/terms" },
     ],
-  },
-
-  loyalty: {
-    defaultRequired: 4,
-    defaultRewardTitle: "Special Musa Kicks Gift",
-    defaultRewardDescription:
-      "Congratulations! You've earned a special gift from Musa Kicks. Contact us on WhatsApp to claim your reward.",
   },
 
   currency: {

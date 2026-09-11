@@ -8,7 +8,7 @@
 ═══════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Modern Luxury Sneaker Palette ────────────────── */
+  /* ── Modern Commerce Palette ───────────────────────── */
   --color-espresso:       #09090B; /* Replaced muddy brown with deep luxury obsidian */
   --color-warm-tan:       #F4F4F5; /* Replaced yellow-beige with crisp porcelain */
   --color-dark-mocha:     #121216; /* Clean sleek onyx */
@@ -348,25 +348,6 @@ h6 {
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: var(--radius-md);
-}
-
-/* ══ Loyalty Progress Dots ══════════════════════════════════ */
-.loyalty-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid var(--border-strong);
-  background: var(--card);
-  transition: all var(--transition-base);
-}
-.loyalty-dot.filled {
-  background: var(--primary);
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(43,27,23,0.15);
-}
-.loyalty-dot.completed {
-  background: #2D6A4F;
-  border-color: #2D6A4F;
 }
 
 /* ══ Product Card ════════════════════════════════════════════ */

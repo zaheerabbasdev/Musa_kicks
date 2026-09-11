@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
+import { getSettings } from "@/lib/services/settings.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBoxOpen,
@@ -10,7 +11,6 @@ import {
   faExclamationTriangle,
   faClock,
   faCheckCircle,
-  faGift,
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
@@ -25,7 +25,6 @@ async function getDashboardStats() {
     deliveredOrders,
     totalRevenue,
     lowStockVariants,
-    availableRewards,
   ] = await Promise.all([
     prisma.product.count({ where: { isActive: true } }),
     prisma.order.count(),
@@ -37,7 +36,6 @@ async function getDashboardStats() {
       where: { status: { in: ["DELIVERED", "SHIPPED"] } },
     }),
     prisma.productVariant.count({ where: { stock: { gt: 0, lte: 5 } } }),
-    prisma.reward.count({ where: { status: "AVAILABLE" } }),
   ]);
 
   return {
@@ -48,7 +46,6 @@ async function getDashboardStats() {
     deliveredOrders,
     totalRevenue: Number(totalRevenue._sum.total ?? 0),
     lowStockVariants,
-    availableRewards,
   };
 }
 
@@ -94,9 +91,10 @@ function StatCard({ label, value, icon, trend, gradient, iconColor }: StatCardPr
 }
 
 export default async function AdminDashboard() {
-  const [stats, recentOrders] = await Promise.all([
+  const [stats, recentOrders, settings] = await Promise.all([
     getDashboardStats().catch(() => null),
     getRecentOrders().catch(() => []),
+    getSettings().catch(() => null),
   ]);
 
   const currencySymbol = "Rs.";
@@ -135,30 +133,7 @@ export default async function AdminDashboard() {
             iconColor="text-emerald-600"
           />
           <StatCard
-            label="Orders Completed"
-            value={stats.totalOrders}
-            icon={faClipboardList}
-            trend="+12 New"
-            gradient="bg-orange-500/10"
-            iconColor="text-orange-600"
-          />
-          <StatCard
-            label="Registered VIPs"
-            value={stats.totalCustomers}
-            icon={faUsers}
-            trend="Active"
-            gradient="bg-blue-500/10"
-            iconColor="text-blue-600"
-          />
-          <StatCard
-            label="Live Shoe Models"
-            value={stats.totalProducts}
-            icon={faBoxOpen}
-            gradient="bg-purple-500/10"
-            iconColor="text-purple-600"
-          />
-          <StatCard
-            label="Pending Fulfillment"
+            label="Pending Orders"
             value={stats.pendingOrders}
             icon={faClock}
             gradient="bg-amber-500/10"
@@ -172,6 +147,14 @@ export default async function AdminDashboard() {
             iconColor="text-teal-600"
           />
           <StatCard
+            label="Completed Orders"
+            value={stats.totalOrders}
+            icon={faClipboardList}
+            trend="+12 New"
+            gradient="bg-orange-500/10"
+            iconColor="text-orange-600"
+          />
+          <StatCard
             label="Low Stock Alerts"
             value={stats.lowStockVariants}
             icon={faExclamationTriangle}
@@ -179,11 +162,19 @@ export default async function AdminDashboard() {
             iconColor="text-rose-600"
           />
           <StatCard
-            label="Pending Rewards"
-            value={stats.availableRewards}
-            icon={faGift}
-            gradient="bg-yellow-500/10"
-            iconColor="text-yellow-600"
+            label="Registered Users"
+            value={stats.totalCustomers}
+            icon={faUsers}
+            trend="Active"
+            gradient="bg-blue-500/10"
+            iconColor="text-blue-600"
+          />
+          <StatCard
+            label="Live Items"
+            value={stats.totalProducts}
+            icon={faBoxOpen}
+            gradient="bg-purple-500/10"
+            iconColor="text-purple-600"
           />
         </div>
       )}
@@ -193,7 +184,7 @@ export default async function AdminDashboard() {
         <div className="p-6 border-b border-neutral-100 flex items-center justify-between">
           <div>
             <h2 className="font-extrabold text-lg text-neutral-950 tracking-tight">Recent Orders</h2>
-            <p className="text-xs text-neutral-400 mt-0.5">Latest transactions processed through Musa Kicks</p>
+            <p className="text-xs text-neutral-400 mt-0.5">Latest transactions processed through {settings?.brandName ?? "Store"}</p>
           </div>
           <Link
             href="/admin/orders"

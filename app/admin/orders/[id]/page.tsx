@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
+import { siteConfig } from "@/config/site";
 import { OrderStatusBadge } from "@/components/ui/Badge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -44,15 +45,51 @@ export default async function AdminOrderDetailsPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <section className="card p-6 lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold">Items</h2>
-            <OrderStatusBadge status={order.status} />
+      <section className="card overflow-hidden">
+        <div className="p-6 border-b border-[var(--border)] flex items-center justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: "var(--muted-foreground)" }}>
+              Order Summary
+            </p>
+            <h2 className="text-lg font-bold mt-1">{order.orderNumber}</h2>
           </div>
+          <OrderStatusBadge status={order.status} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 border-b border-[var(--border)]">
+          <div>
+            <h2 className="text-sm font-bold uppercase tracking-wider mb-3">Company Details</h2>
+            <div className="text-sm space-y-1.5" style={{ color: "var(--muted-foreground)" }}>
+              <p className="font-bold text-[var(--foreground)]">{siteConfig.name}</p>
+              <p>{siteConfig.brand.address}</p>
+              <p>{siteConfig.brand.phone}</p>
+              <p>{siteConfig.brand.email}</p>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-sm font-bold uppercase tracking-wider mb-3">Customer Details</h2>
+            <div className="text-sm space-y-1.5" style={{ color: "var(--muted-foreground)" }}>
+              <p className="font-bold text-[var(--foreground)]">{customerName}</p>
+              <p>{customerEmail}</p>
+              <p>{customerPhone}</p>
+              {order.address && (
+                <p className="pt-2">
+                  {order.address.recipientName}<br />
+                  {order.address.line1}{order.address.line2 ? `, ${order.address.line2}` : ""}<br />
+                  {order.address.city}, {order.address.province}<br />
+                  {order.address.phone}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6 border-b border-[var(--border)]">
+          <h2 className="text-lg font-bold mb-3">Product Details</h2>
           <div className="divide-y divide-[var(--border)]">
             {order.items.map((item) => (
-              <div key={item.id} className="py-4 flex items-center justify-between gap-4">
+              <div key={item.id} className="py-4 first:pt-0 last:pb-0 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3 min-w-0">
                   {item.imageUrl ? (
                     <img src={item.imageUrl} alt={item.productName} className="w-16 h-16 rounded-lg object-cover bg-[var(--muted)]" />
@@ -72,38 +109,18 @@ export default async function AdminOrderDetailsPage({
               </div>
             ))}
           </div>
-        </section>
-
-        <section className="card p-6 space-y-4">
-          <h2 className="text-lg font-bold">Customer</h2>
-          <div className="text-sm space-y-2">
-            <p><strong>{customerName}</strong></p>
-            <p style={{ color: "var(--muted-foreground)" }}>{customerEmail}</p>
-            <p style={{ color: "var(--muted-foreground)" }}>{customerPhone}</p>
-          </div>
-          {order.address && (
-            <>
-              <h2 className="text-lg font-bold pt-3 border-t border-[var(--border)]">Delivery Address</h2>
-              <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>
-                {order.address.recipientName}<br />
-                {order.address.line1}{order.address.line2 ? `, ${order.address.line2}` : ""}<br />
-                {order.address.city}, {order.address.province}<br />
-                {order.address.phone}
-              </p>
-            </>
-          )}
-        </section>
-      </div>
-
-      <section className="card p-6 max-w-lg ml-auto space-y-3">
-        <h2 className="text-lg font-bold">Payment Summary</h2>
-        <div className="flex justify-between text-sm"><span>Subtotal</span><span>Rs. {Number(order.subtotal).toLocaleString()}</span></div>
-        <div className="flex justify-between text-sm"><span>Shipping</span><span>Rs. {Number(order.shippingFee).toLocaleString()}</span></div>
-        <div className="flex justify-between border-t border-[var(--border)] pt-3 font-bold">
-          <span>Total</span><span>Rs. {Number(order.total).toLocaleString()}</span>
         </div>
-        <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>Payment: {order.paymentStatus}</p>
-        {order.notes && <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>Notes: {order.notes}</p>}
+
+        <div className="p-6 space-y-3">
+          <h2 className="text-lg font-bold">Total Amount</h2>
+          <div className="flex justify-between text-sm"><span>Subtotal</span><span>Rs. {Number(order.subtotal).toLocaleString()}</span></div>
+          <div className="flex justify-between text-sm"><span>Shipping</span><span>Rs. {Number(order.shippingFee).toLocaleString()}</span></div>
+          <div className="flex justify-between border-t border-[var(--border)] pt-3 text-lg font-bold">
+            <span>Total</span><span>Rs. {Number(order.total).toLocaleString()}</span>
+          </div>
+          <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>Payment: {order.paymentStatus}</p>
+          {order.notes && <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>Notes: {order.notes}</p>}
+        </div>
       </section>
     </div>
   );

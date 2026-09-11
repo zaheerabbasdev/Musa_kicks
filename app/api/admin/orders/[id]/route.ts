@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/db/prisma";
-import { updateOrderStatus } from "@/lib/services/order.service";
+import { advanceOrderStatus } from "@/lib/services/order.service";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -15,14 +14,13 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     }
 
     const { id } = await params;
-    const { status } = await request.json();
-
-    const updated = await updateOrderStatus(id, status);
+    const updated = await advanceOrderStatus(id);
 
     return NextResponse.json(updated);
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed to update order status";
     return NextResponse.json(
-      { message: error.message || "Failed to update order status" },
+      { message },
       { status: 500 }
     );
   }

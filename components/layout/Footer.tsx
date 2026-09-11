@@ -7,24 +7,18 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { siteConfig } from "@/config/site";
 
-export function Footer() {
+export function Footer({ storeName }: { storeName: string }) {
   const year = new Date().getFullYear();
 
   return (
     <footer className="bg-neutral-950 text-white border-t border-white/10 relative z-10 clear-both mt-auto">
-      {/* Loyalty Banner Strip */}
-      <div className="py-3 text-center text-xs font-extrabold uppercase tracking-widest bg-neutral-900/90 border-b border-white/10 text-amber-300">
-        ✦ VIP LOYALTY CLUB: SHOP 4 TIMES TO EARN A COMPLIMENTARY GIFT ✦
-      </div>
-
       {/* Main Footer */}
       <div className="container-site py-16 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-1.5 mb-4">
-              <span className="text-2xl font-black tracking-tighter text-white">MUSA</span>
-              <span className="text-2xl font-black tracking-tighter text-orange-500">KICKS</span>
+              <span className="text-2xl font-black tracking-tighter text-white">{storeName}</span>
             </div>
             <p className="text-sm leading-relaxed mb-6 text-neutral-400 max-w-[240px]">
               {siteConfig.description.substring(0, 110)}...
@@ -134,15 +128,9 @@ export function Footer() {
         style={{ borderColor: "rgba(255,255,255,0.1)" }}
       >
         <div className="container-site flex flex-col md:flex-row items-center justify-between gap-2 text-sm opacity-60">
-          <p>© {year} Musa Kicks. All rights reserved.</p>
+          <p>© {year} {storeName}. All rights reserved.</p>
           <div className="flex items-center gap-4">
-            <Link
-              href="/return-refund"
-              className="font-semibold opacity-100 hover:text-orange-400 transition-colors"
-            >
-              Returns & Refunds
-            </Link>
-            <p>Premium footwear, delivered with care.</p>
+            <p>Quality products, delivered with care.</p>
           </div>
         </div>
       </div>

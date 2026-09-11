@@ -1,24 +1,23 @@
 import type { Metadata } from "next";
 import { requireAuth } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
+import { getSettings } from "@/lib/services/settings.service";
 
-export const metadata: Metadata = {
-  title: "My Addresses — Musa Kicks",
-};
+export const metadata: Metadata = { title: "My Addresses" };
 
 export default async function AddressesPage() {
   const user = await requireAuth("/account/addresses");
-  const addresses = await prisma.address.findMany({
+  const [addresses, settings] = await Promise.all([prisma.address.findMany({
     where: { userId: user.id },
     orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }],
-  });
+  }), getSettings()]);
 
   return (
     <div className="space-y-8">
       <div>
         <h2 className="text-2xl font-bold">My Addresses</h2>
         <p className="text-sm text-text-muted mt-1">
-          Saved delivery addresses for your Musa Kicks orders.
+          Saved delivery addresses for your {settings.brandName} orders.
         </p>
       </div>
 

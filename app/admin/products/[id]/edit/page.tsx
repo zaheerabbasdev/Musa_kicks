@@ -67,7 +67,7 @@ export default async function EditProductPage({
         </Link>
         <div>
           <h1 className="text-2xl font-bold">Edit Product</h1>
-          <p className="text-xs text-text-muted mt-0.5">Update this footwear product</p>
+          <p className="text-xs text-text-muted mt-0.5">Update this catalog product</p>
         </div>
       </div>
 

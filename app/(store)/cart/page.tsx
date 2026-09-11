@@ -12,7 +12,7 @@ export default async function CartPage() {
     <div className="container-site py-10 md:py-16">
       <h1 className="text-3xl md:text-4xl font-display font-bold mb-10">Shopping Cart</h1>
       <CartPageClient settings={settings ?? {
-        brandName: "Musa Kicks",
+        brandName: "Store",
         brandEmail: "hello@musakicks.com",
         brandPhone: "",
         brandAddress: "",
@@ -20,9 +20,6 @@ export default async function CartPage() {
         whatsappOrderMessageTemplate: "",
         shippingFee: 200,
         freeShippingThreshold: 5000,
-        loyaltyRequiredPurchases: 4,
-        loyaltyRewardTitle: "Special Gift",
-        loyaltyRewardDescription: "",
         currency: "PKR",
         currencySymbol: "Rs.",
         returnPeriodDays: 7,

@@ -29,7 +29,6 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
 
   const [formData, setFormData] = useState({
     name: initialData?.name ?? "",
-    sku: initialData?.sku ?? "",
     categoryId: initialData?.categoryId ?? categories[0]?.id ?? "",
     price: initialData?.price ? String(initialData.price) : "",
     compareAtPrice: initialData?.compareAtPrice ? String(initialData.compareAtPrice) : "",
@@ -191,10 +190,13 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
     setError(null);
 
     try {
+      const productSku =
+        initialData?.sku?.trim().toUpperCase() ||
+        `MK-${formData.name.trim().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toUpperCase()}-${Date.now().toString(36).toUpperCase()}`;
       const payload = {
         ...formData,
         name: formData.name.trim(),
-        sku: formData.sku.trim().toUpperCase(),
+        sku: productSku,
         categoryId: formData.categoryId.trim(),
         description: formData.description.trim(),
         price: parseFloat(formData.price),
@@ -213,7 +215,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
           stock: Number(v.stock),
           sku:
             v.sku.trim().toUpperCase() ||
-            `${formData.sku.trim().toUpperCase()}-${v.color.trim().substring(0, 2)}-${v.size.trim()}`,
+            `${productSku}-${v.color.trim().substring(0, 2)}-${v.size.trim()}`,
         })),
       };
 
@@ -268,19 +270,6 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider mb-2">
-              SKU (Stock Keeping Unit) *
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.sku}
-              onChange={(e) => setFormData({ ...formData, sku: e.target.value.toUpperCase() })}
-              className="input w-full uppercase"
-              placeholder="e.g. MK-AMP-001"
-            />
-          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -343,7 +332,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
             value={formData.shortDescription}
             onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
             className="input w-full"
-            placeholder="Modern street sneaker with point-loaded Air cushioning"
+            placeholder="A concise summary of this product and what makes it useful"
           />
         </div>
 
@@ -357,7 +346,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             className="input w-full py-2.5 resize-none"
-            placeholder="Detailed shoe features, material, cushion technology, and styling notes..."
+            placeholder="Detailed product features, materials, specifications, and care notes..."
           />
         </div>
 
@@ -484,13 +473,13 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
         )}
       </div>
 
-      {/* Variants (Size / Color / Stock) */}
+      {/* Variants and inventory */}
       <div className="card p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold">Sizes, Colors & Stock</h2>
+            <h2 className="text-lg font-bold">Options & Stock</h2>
             <p className="text-xs text-text-muted mt-0.5">
-              Specify shoe sizes, colorways, and current warehouse inventory
+              Specify product options and current warehouse inventory
             </p>
           </div>
           <button

@@ -18,7 +18,7 @@ import { useCartStore } from "@/store/cart.store";
 import { useWishlistStore } from "@/store/wishlist.store";
 import { useSession, signOut } from "next-auth/react";
 
-export function Navbar() {
+export function Navbar({ storeName }: { storeName: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -102,13 +102,10 @@ export function Navbar() {
           <Link
             href="/"
             className="flex items-center gap-1.5 shrink-0 group"
-            aria-label="Musa Kicks Home"
+            aria-label={`${storeName} Home`}
           >
             <span className="text-2xl font-black tracking-tighter text-neutral-950">
-              MUSA
-            </span>
-            <span className="text-2xl font-black tracking-tighter text-orange-600">
-              KICKS
+              {storeName}
             </span>
           </Link>
 
@@ -253,7 +250,7 @@ export function Navbar() {
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-[var(--border)]">
             <span className="text-xl font-display font-bold" style={{ color: "var(--primary)" }}>
-              MUSA KICKS
+              {storeName}
             </span>
             <button onClick={() => setIsMenuOpen(false)} className="btn btn-ghost btn-icon">
               <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
@@ -319,7 +316,7 @@ export function Navbar() {
                 name="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search shoes..."
+                placeholder="Search products..."
                 className="input min-w-0 flex-1 bg-white text-base py-3 px-4 pr-12 text-neutral-900 placeholder:text-neutral-400"
                 aria-label="Search products"
               />

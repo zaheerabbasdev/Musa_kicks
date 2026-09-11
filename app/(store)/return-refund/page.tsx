@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getSettings } from "@/lib/services/settings.service";
 import { faArrowLeft, faBoxOpen, faCircleCheck, faRotateLeft } from "@fortawesome/free-solid-svg-icons";
 
 export const metadata: Metadata = {
-  title: "Return & Refund Policy — Musa Kicks",
-  description: "Learn about Musa Kicks returns, exchanges, refunds, and eligibility requirements.",
+  title: "Return & Refund Policy",
+  description: "Learn about returns, exchanges, refunds, and eligibility requirements.",
 };
 
 const POLICY_SECTIONS = [
@@ -19,7 +20,7 @@ const POLICY_SECTIONS = [
     title: "Item Condition",
     icon: faBoxOpen,
     content:
-      "Items must be unworn, unused, and returned with the original box, packaging, tags, and accessories. Shoes that show wear or have been washed cannot be accepted.",
+      "Items must be unused and returned with the original packaging, tags, and accessories. Products that show wear or damage cannot be accepted.",
   },
   {
     title: "How to Request a Return",
@@ -29,7 +30,8 @@ const POLICY_SECTIONS = [
   },
 ];
 
-export default function ReturnRefundPage() {
+export default async function ReturnRefundPage() {
+  const settings = await getSettings();
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
       <div className="max-w-3xl mx-auto">
@@ -49,8 +51,8 @@ export default function ReturnRefundPage() {
             Returns & Refunds
           </h1>
           <p className="text-text-muted mt-4 text-base sm:text-lg leading-relaxed">
-            We want you to feel confident in every pair. Here is everything you need to know
-            about returns, exchanges, and refunds at Musa Kicks.
+            We want you to feel confident in every purchase. Here is everything you need to know
+            about returns, exchanges, and refunds at {settings.brandName}.
           </p>
         </div>
 
@@ -77,7 +79,7 @@ export default function ReturnRefundPage() {
             </p>
             <p>
               For change-of-mind returns or size exchanges, return shipping charges may apply.
-              If we sent an incorrect or damaged item, Musa Kicks will arrange the appropriate
+              If we sent an incorrect or damaged item, {settings.brandName} will arrange the appropriate
               replacement or resolution.
             </p>
             <p>

@@ -34,18 +34,6 @@ enum PaymentStatus {
   COD
 }
 
-enum RewardStatus {
-  LOCKED
-  AVAILABLE
-  CLAIMED
-  EXPIRED
-}
-
-enum LoyaltyCycleStatus {
-  ACTIVE
-  COMPLETED
-}
-
 // ── User ───────────────────────────────────────────────────
 
 model User {
@@ -64,8 +52,6 @@ model User {
   wishlist      Wishlist?
   orders        Order[]
   addresses     Address[]
-  rewards       Reward[]
-  loyaltyCycles LoyaltyCycle[]
 
   @@index([email])
   @@map("users")
@@ -289,7 +275,6 @@ model Order {
   user             User?             @relation(fields: [userId], references: [id])
   address          Address?          @relation(fields: [addressId], references: [id])
   items            OrderItem[]
-  loyaltyPurchases LoyaltyPurchase[]
 
   @@index([orderNumber])
   @@index([userId])
@@ -321,64 +306,6 @@ model OrderItem {
 
   @@index([orderId])
   @@map("order_items")
-}
-
-// ── LoyaltyCycle ────────────────────────────────────────────
-
-model LoyaltyCycle {
-  id            String             @id @default(cuid()) @db.VarChar(64)
-  userId        String             @db.VarChar(64)
-  purchaseCount Int                @default(0)
-  requiredCount Int                @default(4) // configurable per cycle
-  status        LoyaltyCycleStatus @default(ACTIVE)
-  startedAt     DateTime           @default(now())
-  completedAt   DateTime?
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-
-  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  purchases LoyaltyPurchase[]
-
-  @@index([userId])
-  @@index([userId, status])
-  @@map("loyalty_cycles")
-}
-
-// ── LoyaltyPurchase ─────────────────────────────────────────
-
-model LoyaltyPurchase {
-  id      String   @id @default(cuid()) @db.VarChar(64)
-  cycleId String   @db.VarChar(64)
-  orderId String   @db.VarChar(64)
-
-  cycle LoyaltyCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
-  order Order        @relation(fields: [orderId], references: [id])
-
-  createdAt DateTime @default(now())
-
-  @@unique([cycleId, orderId])
-  @@index([cycleId])
-  @@map("loyalty_purchases")
-}
-
-// ── Reward ──────────────────────────────────────────────────
-
-model Reward {
-  id          String       @id @default(cuid()) @db.VarChar(64)
-  customerId  String       @db.VarChar(64)
-  title       String       @db.VarChar(191)
-  description String       @db.Text
-  status      RewardStatus @default(AVAILABLE)
-  claimedAt   DateTime?
-  expiresAt   DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  customer User @relation(fields: [customerId], references: [id], onDelete: Cascade)
-
-  @@index([customerId])
-  @@index([status])
-  @@map("rewards")
 }
 
 // ── SiteSettings ────────────────────────────────────────────

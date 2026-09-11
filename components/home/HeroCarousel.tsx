@@ -9,23 +9,23 @@ const slides = [
   {
     eyebrow: "THE 2026 EDITION",
     title: "Move different.",
-    description: "Premium sneakers designed for every step, every street, and every statement.",
+    description: "Thoughtfully selected products for every routine, every space, and every personal style.",
     image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1600&q=85",
     accent: "from-orange-500/80 to-rose-600/80",
     href: "/shop?sort=newest",
   },
   {
     eyebrow: "BUILT FOR THE DAILY GRIND",
-    title: "Comfort meets culture.",
-    description: "Fresh silhouettes, dependable cushioning, and the confidence to go further.",
+    title: "Everyday meets exceptional.",
+    description: "Fresh arrivals, dependable quality, and useful details chosen to make life easier.",
     image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=1600&q=85",
     accent: "from-indigo-600/80 to-violet-700/80",
     href: "/shop",
   },
   {
-    eyebrow: "FIND YOUR NEXT PAIR",
-    title: "Own your color.",
-    description: "Explore standout shades and signature details curated for your rotation.",
+    eyebrow: "FIND YOUR NEXT FAVORITE",
+    title: "Make it yours.",
+    description: "Explore standout colors, practical details, and signature pieces curated for your collection.",
     image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=1600&q=85",
     accent: "from-emerald-600/80 to-cyan-700/80",
     href: "/shop?category=casual",
@@ -80,7 +80,7 @@ export function HeroCarousel() {
             href={slide.href}
             className="mt-8 inline-flex items-center gap-3 rounded-xl bg-white px-6 py-3.5 text-sm font-black uppercase tracking-wider text-neutral-950 transition hover:-translate-y-0.5 hover:bg-orange-50"
           >
-            Shop the drop
+            Explore the collection
             <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="h-3.5 w-3.5" />
           </Link>
         </div>

@@ -191,7 +191,7 @@ export function ProductCard({
           {/* Category Tag */}
           <div className="flex items-center justify-between gap-2 mb-1">
             <span className="text-[11px] font-bold uppercase tracking-widest text-neutral-400">
-              {category?.name ?? "Footwear"}
+                {category?.name ?? "Product"}
             </span>
             {/* Swatch dots */}
             {colors.length > 0 && (

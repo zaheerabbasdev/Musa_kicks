@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { requireAuth } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
+import { getSettings } from "@/lib/services/settings.service";
 
-export const metadata: Metadata = {
-  title: "My Profile — Musa Kicks",
-};
+export const metadata: Metadata = { title: "My Profile" };
 
 export default async function ProfilePage() {
   const sessionUser = await requireAuth("/account/profile");
-  const user = await prisma.user.findUnique({
+  const [user, settings] = await Promise.all([prisma.user.findUnique({
     where: { id: sessionUser.id },
     select: {
       name: true,
@@ -16,7 +15,7 @@ export default async function ProfilePage() {
       phone: true,
       createdAt: true,
     },
-  });
+  }), getSettings()]);
 
   if (!user) {
     throw new Error("Authenticated user could not be found.");
@@ -27,7 +26,7 @@ export default async function ProfilePage() {
       <div>
         <h2 className="text-2xl font-bold">My Profile</h2>
         <p className="text-sm text-text-muted mt-1">
-          Review the personal information connected to your Musa Kicks account.
+          Review the personal information connected to your {settings.brandName} account.
         </p>
       </div>
 

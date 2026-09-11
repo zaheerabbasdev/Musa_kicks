@@ -4,10 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faPhone, faLocationDot, faClock } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp, faInstagram } from "@fortawesome/free-brands-svg-icons";
 
-export const metadata: Metadata = {
-  title: "Contact Us — Musa Kicks",
-  description: "Get in touch with Musa Kicks for inquiries, sizing advice, and orders.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  return {
+    title: `Contact Us — ${settings.brandName}`,
+    description: `Get in touch with ${settings.brandName} for product questions, recommendations, and orders.`,
+  };
+}
 
 export default async function ContactPage() {
   const settings = await getSettings();
@@ -21,7 +24,7 @@ export default async function ContactPage() {
           Get in Touch
         </span>
         <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight">
-          We're Here to Help
+          We&apos;re Here to Help
         </h1>
         <p className="text-text-muted mt-4 text-base sm:text-lg">
           Have a question about sizes, tracking an order, or need a recommendation? Connect with our team.
@@ -38,6 +41,7 @@ export default async function ContactPage() {
             <div>
               <h3 className="font-bold text-base">WhatsApp Concierge</h3>
               <p className="text-text-muted text-sm mt-1">Instant support and direct ordering</p>
+              <p className="text-text-muted text-sm mt-1">{whatsappNumber}</p>
               <a
                 href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}`}
                 target="_blank"
@@ -57,10 +61,10 @@ export default async function ContactPage() {
               <h3 className="font-bold text-base">Email Support</h3>
               <p className="text-text-muted text-sm mt-1">For general inquiries and press</p>
               <a
-                href="mailto:support@musakicks.com"
+                href={`mailto:${settings.brandEmail}`}
                 className="text-accent font-semibold text-sm hover:underline mt-2 inline-block"
               >
-                support@musakicks.com
+                {settings.brandEmail}
               </a>
             </div>
           </div>

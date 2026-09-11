@@ -65,7 +65,7 @@ export function WishlistPageClient({ currencySymbol }: { currencySymbol: string 
           description="Explore our latest drops and save items you want to pick up later."
           action={
             <Link href="/shop" className="btn btn-primary">
-              Explore Kicks
+              Explore Products
             </Link>
           }
         />

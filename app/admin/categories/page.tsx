@@ -20,9 +20,9 @@ export default async function AdminCategoriesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Footwear Categories</h1>
+          <h1 className="text-2xl font-bold">Product Categories</h1>
           <p className="text-xs text-text-muted mt-0.5">
-            Organize catalog into sneakers, running, casual, formal, boots, and slides
+            Organize your catalog into clear, discoverable product groups
           </p>
         </div>
         <Link href="/admin/categories/new" className="btn btn-primary gap-2">
@@ -54,7 +54,7 @@ export default async function AdminCategoriesPage() {
                   </td>
                   <td className="text-right">
                     <span className="badge badge-secondary text-xs">
-                      {cat._count.products} kicks
+                      {cat._count.products} products
                     </span>
                   </td>
                   <td className="text-center">

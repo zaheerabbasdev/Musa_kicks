@@ -2,23 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireAuth } from "@/lib/auth/session";
 import { getCustomerOrders } from "@/lib/services/order.service";
-import { getLoyaltySummary } from "@/lib/services/loyalty.service";
 import { getSettings } from "@/lib/services/settings.service";
-import { LoyaltyProgress } from "@/components/loyalty/LoyaltyProgress";
 import { OrderStatusBadge } from "@/components/ui/Badge";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 
 export const metadata: Metadata = {
-  title: "Account Overview — Musa Kicks",
+  title: "Account Overview",
 };
 
 export default async function AccountPage() {
   const user = await requireAuth("/account");
 
-  const [orders, loyaltySummary, settings] = await Promise.all([
+  const [orders, settings] = await Promise.all([
     getCustomerOrders(user.id),
-    getLoyaltySummary(user.id),
     getSettings(),
   ]);
 
@@ -27,15 +24,6 @@ export default async function AccountPage() {
 
   return (
     <div className="space-y-8">
-      {/* Loyalty Status */}
-      <section>
-        <h2 className="text-xl font-bold mb-4">Loyalty Program</h2>
-        <LoyaltyProgress
-          purchaseCount={loyaltySummary.purchaseCount}
-          requiredCount={loyaltySummary.requiredCount}
-        />
-      </section>
-
       {/* Recent Orders */}
       <section className="card p-6">
         <div className="flex items-center justify-between mb-6">

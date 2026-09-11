@@ -48,7 +48,7 @@ export function WhatsAppOrderButton({
     );
 
     const message = [
-      `Hello ${settings.brandName ?? "Musa Kicks"},`,
+      `Hello ${settings.brandName ?? "Store"},`,
       "",
       "I would like to place an order.",
       "",

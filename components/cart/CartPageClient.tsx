@@ -34,7 +34,7 @@ export function CartPageClient({ settings }: CartPageClientProps) {
     return (
       <EmptyState
         title="Your cart is empty"
-        description="Add some shoes to get started"
+          description="Add some products to get started"
         action={
           <Link href="/shop" className="btn btn-primary btn-lg">
             <FontAwesomeIcon icon={faShoppingBag} className="w-4 h-4" />

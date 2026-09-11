@@ -133,7 +133,7 @@ export default async function ProductPage({ params }: PageProps) {
             product={product}
             currencySymbol={currencySymbol}
             whatsappNumber={settings?.whatsappNumber ?? ""}
-            brandName={settings?.brandName ?? "Musa Kicks"}
+            brandName={settings?.brandName ?? "Store"}
             shippingFee={settings?.shippingFee ?? 200}
             freeShippingThreshold={settings?.freeShippingThreshold ?? 5000}
           />

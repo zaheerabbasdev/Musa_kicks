@@ -6,6 +6,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { nanoid } from "nanoid";
 import type { CartWithItems } from "@/types";
+import type { OrderStatus } from "@prisma/client";
 
 function generateOrderNumber(): string {
   const prefix = "MK";
@@ -133,6 +134,34 @@ export async function getUserOrders(userId: string) {
 }
 
 export const getCustomerOrders = getUserOrders;
+
+const NEXT_ORDER_STATUS: Partial<Record<OrderStatus, OrderStatus>> = {
+  PENDING: "CONFIRMED",
+  CONFIRMED: "PROCESSING",
+  PROCESSING: "SHIPPED",
+  SHIPPED: "DELIVERED",
+};
+
+export async function advanceOrderStatus(orderId: string) {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    select: { status: true },
+  });
+
+  if (!order) {
+    throw new Error("Order not found");
+  }
+
+  const nextStatus = NEXT_ORDER_STATUS[order.status];
+  if (!nextStatus) {
+    throw new Error(`Order status cannot advance from ${order.status}`);
+  }
+
+  return prisma.order.update({
+    where: { id: orderId },
+    data: { status: nextStatus },
+  });
+}
 
 export async function getAdminOrders(page = 1, limit = 20, status?: string) {
   const where = status ? { status: status as import("@prisma/client").OrderStatus } : {};

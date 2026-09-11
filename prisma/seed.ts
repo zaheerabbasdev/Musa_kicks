@@ -1,6 +1,6 @@
 /**
  * Musa Kicks — Prisma Seed Data
- * Realistic seed data with 15+ shoes, 6 categories, variants, users, orders, loyalty, site settings.
+ * Realistic seed data with 15+ shoes, 6 categories, variants, users, orders, and site settings.
  *
  * Run: npx prisma db seed
  */
@@ -56,9 +56,6 @@ async function main() {
   console.log("🌱 Starting seed...");
 
   // ── Cleanup ────────────────────────────────────────────
-  await prisma.loyaltyPurchase.deleteMany();
-  await prisma.loyaltyCycle.deleteMany();
-  await prisma.reward.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.cartItem.deleteMany();
@@ -83,10 +80,6 @@ async function main() {
     { key: "whatsappOrderMessageTemplate", value: "Hello Musa Kicks,\n\nI would like to place an order.\n\n{orderDetails}\n\nThank you." },
     { key: "shippingFee",             value: "200" },
     { key: "freeShippingThreshold",   value: "5000" },
-    { key: "loyaltyRequiredPurchases", value: "4" },
-    { key: "loyaltyRewardTitle",      value: "Special Musa Kicks Gift" },
-    { key: "loyaltyRewardDescription", value: "Congratulations! You have earned a special gift from Musa Kicks. Please WhatsApp us to claim your reward. We'll send you an exclusive pair or special merchandise." },
-    { key: "loyaltyRewardExpirationDays", value: "90" },
     { key: "currency",                value: "PKR" },
     { key: "currencySymbol",          value: "Rs." },
     { key: "returnPeriodDays",        value: "7" },
@@ -400,7 +393,7 @@ async function main() {
     });
   }
 
-  // Customer 1 orders (3 delivered → loyalty progress 3/4)
+  // Customer 1 orders
   const p0 = products[0], p1 = products[1], p2 = products[4];
   const o1 = await createOrder(customer1.id, [{ product: p0, variantIdx: 2, qty: 1 }], "DELIVERED", 90);
   const o2 = await createOrder(customer1.id, [{ product: p1, variantIdx: 0, qty: 1 }], "DELIVERED", 60);
@@ -412,43 +405,6 @@ async function main() {
   const o6 = await createOrder(customer2.id, [{ product: products[11], variantIdx: 2, qty: 1 }], "SHIPPED", 5);
 
   console.log("✅ Sample orders created");
-
-  // ── Loyalty Cycles ─────────────────────────────────────
-  // Customer 1: 3/4 progress
-  const cycle1 = await prisma.loyaltyCycle.create({
-    data: {
-      userId: customer1.id,
-      purchaseCount: 3,
-      requiredCount: 4,
-      status: "ACTIVE",
-      startedAt: new Date(Date.now() - 90 * 86400000),
-    },
-  });
-
-  await prisma.loyaltyPurchase.createMany({
-    data: [
-      { cycleId: cycle1.id, orderId: o1.id },
-      { cycleId: cycle1.id, orderId: o2.id },
-      { cycleId: cycle1.id, orderId: o3.id },
-    ],
-  });
-
-  // Customer 2: 1/4 progress
-  const cycle2 = await prisma.loyaltyCycle.create({
-    data: {
-      userId: customer2.id,
-      purchaseCount: 1,
-      requiredCount: 4,
-      status: "ACTIVE",
-      startedAt: new Date(Date.now() - 45 * 86400000),
-    },
-  });
-
-  await prisma.loyaltyPurchase.create({
-    data: { cycleId: cycle2.id, orderId: o5.id },
-  });
-
-  console.log("✅ Loyalty cycles created");
 
   // ── Sample Addresses ───────────────────────────────────
   await prisma.address.create({

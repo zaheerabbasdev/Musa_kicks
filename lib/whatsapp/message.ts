@@ -43,7 +43,7 @@ export function generateOrderMessage(
   const total = subtotal + shippingFee;
 
   const lines = [
-    `Hello ${settings.brandName ?? "Musa Kicks"},`,
+    `Hello ${settings.brandName ?? "Store"},`,
     "",
     "I would like to place an order.",
     "",

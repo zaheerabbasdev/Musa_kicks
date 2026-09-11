@@ -5,8 +5,6 @@ import {
   faArrowRight,
   faStar,
   faTruckFast,
-  faGift,
-  faCheckCircle,
   faAward,
   faFeatherPointed,
   faFire,
@@ -16,19 +14,22 @@ import { ProductGrid } from "@/components/products/ProductGrid";
 import { getFeaturedProducts, getNewArrivals, getBestSellers } from "@/lib/services/product.service";
 import { getCategories } from "@/lib/services/category.service";
 import { getSettings } from "@/lib/services/settings.service";
-import { siteConfig } from "@/config/site";
 import { CloudinaryImage } from "@/components/cloudinary/CloudinaryImage";
 import { CategoryCard } from "@/components/categories/CategoryCard";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 
-export const metadata: Metadata = {
-  title: `${siteConfig.name} — ${siteConfig.tagline}`,
-  description: siteConfig.description,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings().catch(() => null);
+  const storeName = settings?.brandName ?? "Store";
+  return {
+    title: storeName,
+    description: "Thoughtfully selected products designed for people who live differently.",
+  };
+}
 
 // High-resolution curated editorial category visuals
 const CATEGORY_VISUALS: Record<string, string> = {
-  sneakers: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&q=80",
+  default: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80",
   casual:   "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80",
   running:  "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=800&q=80",
   formal:   "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=800&q=80",
@@ -67,7 +68,7 @@ export default async function HomePage() {
                 href="/shop"
                 className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-neutral-900 hover:text-orange-600 transition-colors group"
               >
-                <span>View All Shoes</span>
+                <span>View All Products</span>
                 <FontAwesomeIcon icon={faArrowRight} className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
@@ -75,7 +76,7 @@ export default async function HomePage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
               {categories.slice(0, 6).map((cat) => {
                 const normalizedSlug = cat.slug.toLowerCase();
-                const visualUrl = cat.imageUrl || CATEGORY_VISUALS[normalizedSlug] || CATEGORY_VISUALS["sneakers"];
+                const visualUrl = cat.imageUrl || CATEGORY_VISUALS[normalizedSlug] || CATEGORY_VISUALS.default;
                 const count = (cat as { _count?: { products: number } })._count?.products;
 
                 return (
@@ -95,7 +96,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ── FEATURED SHOES ────────────────────────────────────── */}
+      {/* ── FEATURED PRODUCTS ────────────────────────────────── */}
       {featured.length > 0 && (
         <section className="py-20 bg-neutral-50/80 border-y border-neutral-200/60" aria-labelledby="featured-heading">
           <div className="container-site">
@@ -105,7 +106,7 @@ export default async function HomePage() {
                   HANDPICKED SELECTION
                 </p>
                 <h2 id="featured-heading" className="text-3xl md:text-4xl font-extrabold tracking-tight text-neutral-950">
-                  Featured Shoes
+                  Featured Products
                 </h2>
               </div>
               <Link
@@ -120,80 +121,6 @@ export default async function HomePage() {
           </div>
         </section>
       )}
-
-      {/* ── VIP LOYALTY BANNER ────────────────────────────────── */}
-      <section
-        className="py-20 bg-neutral-950 text-white relative overflow-hidden"
-        aria-labelledby="loyalty-heading"
-      >
-        {/* Glow backdrop */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-r from-amber-500/15 via-orange-500/15 to-transparent blur-[120px] pointer-events-none" />
-
-        <div className="container-site relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* VIP Tag */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest bg-amber-400/20 text-amber-300 border border-amber-400/30 mb-6">
-              <FontAwesomeIcon icon={faAward} className="w-3.5 h-3.5" />
-              <span>MUSA VIP REWARDS PROGRAM</span>
-            </div>
-
-            <h2
-              id="loyalty-heading"
-              className="flex flex-col gap-2.5 sm:gap-3 mb-6 text-center"
-            >
-              <span className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white block">
-                SHOP 4 TIMES.
-              </span>
-              <span className="text-xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent block">
-                CLAIM AN EXCLUSIVE COMPLIMENTARY GIFT.
-              </span>
-            </h2>
-
-            <p className="text-base sm:text-lg text-justify leading-relaxed text-neutral-300 max-w-2xl mx-auto mb-10 mt-6! ml-24!">
-              Every qualifying order automatically advances your loyalty milestone streak. Complete 4 purchases
-              to unlock exclusive pairs or limited-edition designer merchandise.
-            </p>
-
-            {/* Futuristic 4-Step Milestone Tracker */}
-            <div className="max-w-xl mx-auto bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md mb-10 mt-10!">
-              <div className="flex items-center justify-between relative">
-                {/* Connecting background bar */}
-                <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-1 bg-white/10 z-0" />
-                <div className="absolute left-6 w-3/4 top-1/2 -translate-y-1/2 h-1 bg-gradient-to-r from-amber-400 to-orange-500 z-0" />
-
-                {[1, 2, 3].map((step) => (
-                  <div key={step} className="relative z-10 flex flex-col items-center">
-                    <div className="w-10 h-10 rounded-full bg-amber-400 text-neutral-950 font-black text-sm flex items-center justify-center shadow-lg shadow-amber-400/30">
-                      <FontAwesomeIcon icon={faCheckCircle} className="w-5 h-5" />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-300 mt-2">
-                      Order {step}
-                    </span>
-                  </div>
-                ))}
-
-                {/* Final Goal Step */}
-                <div className="relative z-10 flex flex-col items-center">
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 text-neutral-950 font-black text-sm flex items-center justify-center shadow-xl shadow-orange-500/40 animate-pulse">
-                    <FontAwesomeIcon icon={faGift} className="w-5 h-5" />
-                  </div>
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 mt-2">
-                    Free Gift 🎁
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <Link
-              href="/account/rewards"
-              className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-sm font-extrabold uppercase tracking-wider bg-amber-400 text-neutral-950 hover:bg-amber-300 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-amber-400/20"
-            >
-              <span>Explore Rewards Program</span>
-              <FontAwesomeIcon icon={faArrowRight} className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* ── NEW ARRIVALS ──────────────────────────────────────── */}
       {newArrivals.length > 0 && (
@@ -247,7 +174,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ── WHY MUSA KICKS ────────────────────────────────────── */}
+      {/* ── WHY SHOP WITH US ─────────────────────────────────── */}
       <section className="py-20 bg-white" aria-labelledby="why-heading">
         <div className="container-site">
           <div className="text-center max-w-2xl mx-auto mb-14">
@@ -255,7 +182,7 @@ export default async function HomePage() {
               THE MUSA STANDARD
             </p>
             <h2 id="why-heading" className="text-3xl md:text-4xl font-extrabold tracking-tight text-neutral-950">
-              Why Musa Kicks?
+              Why {settings?.brandName ?? "Store"}?
             </h2>
           </div>
 
@@ -284,12 +211,6 @@ export default async function HomePage() {
                 title: "Fast Delivery",
                 desc: "Prompt dispatch and careful insured transit straight to your doorstep.",
                 accent: "text-emerald-500 bg-emerald-500/10",
-              },
-              {
-                icon: faGift,
-                title: "VIP Loyalty",
-                desc: "Shop 4 times and receive a special complimentary gift.",
-                accent: "text-purple-500 bg-purple-500/10",
               },
             ].map(({ icon, title, desc, accent }) => (
               <div
@@ -330,12 +251,12 @@ export default async function HomePage() {
               </span>
             </h2>
             <p className="text-base sm:text-lg text-justify leading-relaxed text-neutral-300 mb-6 mt-6!">
-              Musa Kicks was founded with a single mission: footwear should never compromise between
-              unapologetic streetwear aesthetics and uncompromising craftsmanship.
+              {settings?.brandName ?? "Store"} was founded with a single mission: shopping should feel personal,
+              dependable, and inspiring from discovery through delivery.
             </p>
             <p className="text-base sm:text-lg leading-relaxed text-neutral-300 mb-10">
-              From limited drops to everyday classics, every pair in our collection is curated to give you
-              distinction, comfort, and undeniable presence.
+              From practical essentials to standout finds, every product in our collection is curated to bring
+              quality, character, and value to your everyday life.
             </p>
             <Link
               href="/about"

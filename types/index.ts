@@ -77,14 +77,6 @@ export type WishlistWithItems = Prisma.WishlistGetPayload<{
   };
 }>;
 
-// ── Loyalty Types ─────────────────────────────────────────
-
-export type LoyaltyCycleWithPurchases = Prisma.LoyaltyCycleGetPayload<{
-  include: {
-    purchases: true;
-  };
-}>;
-
 // ── API Response Types ────────────────────────────────────
 
 export type ApiResponse<T = null> = {
@@ -136,10 +128,6 @@ export type SiteSettingsMap = {
   whatsappOrderMessageTemplate: string;
   shippingFee: number;
   freeShippingThreshold: number;
-  loyaltyRequiredPurchases: number;
-  loyaltyRewardTitle: string;
-  loyaltyRewardDescription: string;
-  loyaltyRewardExpirationDays?: number;
   currency: string;
   currencySymbol: string;
   returnPeriodDays: number;

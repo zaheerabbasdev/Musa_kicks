@@ -18,7 +18,7 @@ export default async function AdminSettingsPage() {
       <div>
         <h1 className="text-2xl font-bold">Store Configuration</h1>
         <p className="text-xs text-text-muted mt-0.5">
-          Manage WhatsApp phone number, shipping costs, and customer loyalty parameters
+          Manage WhatsApp phone number, shipping costs, and store preferences
         </p>
       </div>
 

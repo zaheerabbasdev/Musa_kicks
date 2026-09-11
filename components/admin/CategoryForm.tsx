@@ -69,7 +69,7 @@ export function CategoryForm({ initialData }: CategoryFormProps) {
           value={name}
           onChange={(event) => setName(event.target.value)}
           className="input w-full"
-          placeholder="e.g. Sneakers"
+              placeholder="e.g. Home Essentials"
           minLength={2}
           maxLength={100}
           required
@@ -85,7 +85,7 @@ export function CategoryForm({ initialData }: CategoryFormProps) {
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           className="input w-full min-h-28 resize-y"
-          placeholder="Describe the footwear in this category"
+              placeholder="Describe the products in this category"
         />
       </div>
 

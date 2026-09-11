@@ -63,7 +63,7 @@ export function CloudinaryImage({
     return (
       <Image
         src={imageSrc}
-        alt={alt || "Footwear product"}
+        alt={alt || "Catalog product"}
         fill
         className={className}
         style={{ objectFit }}
@@ -82,7 +82,7 @@ export function CloudinaryImage({
   return (
     <Image
       src={imageSrc}
-      alt={alt || "Footwear product"}
+      alt={alt || "Catalog product"}
       width={width}
       height={height}
       className={className}

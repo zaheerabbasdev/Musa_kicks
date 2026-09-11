@@ -9,7 +9,6 @@ import {
   faListUl,
   faClipboardList,
   faUsers,
-  faGift,
   faChartLine,
   faGear,
   faRightFromBracket,
@@ -30,16 +29,16 @@ const navItems: NavItem[] = [
   { label: "Categories",   href: "/admin/categories", icon: faListUl },
   { label: "Orders",       href: "/admin/orders",     icon: faClipboardList },
   { label: "Customers",    href: "/admin/customers",  icon: faUsers },
-  { label: "Loyalty",      href: "/admin/loyalty",    icon: faGift },
   { label: "Analytics",    href: "/admin/analytics",  icon: faChartLine },
   { label: "Settings",     href: "/admin/settings",   icon: faGear },
 ];
 
 interface AdminSidebarProps {
+  storeName: string;
   onClose?: () => void;
 }
 
-export function AdminSidebar({ onClose }: AdminSidebarProps = {}) {
+export function AdminSidebar({ storeName, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -50,7 +49,7 @@ export function AdminSidebar({ onClose }: AdminSidebarProps = {}) {
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
             <span className="text-lg font-black tracking-tight text-white group-hover:text-amber-300 transition-colors">
-              MUSA KICKS
+              {storeName}
             </span>
           </div>
           <span className="block text-[10px] font-bold uppercase tracking-widest text-neutral-400 mt-1">

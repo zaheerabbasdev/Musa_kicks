@@ -18,12 +18,6 @@ export const siteSettingsSchema = z.object({
   whatsappNumber: z.string().min(10, "WhatsApp number required"),
   whatsappOrderMessageTemplate: z.string(),
 
-  // Loyalty
-  loyaltyRequiredPurchases: z.number().int().min(1).default(4),
-  loyaltyRewardTitle: z.string(),
-  loyaltyRewardDescription: z.string(),
-  loyaltyRewardExpirationDays: z.number().int().min(0).optional(),
-
   // Social
   socialInstagram: z.string().url().optional().or(z.literal("")),
   socialFacebook: z.string().url().optional().or(z.literal("")),

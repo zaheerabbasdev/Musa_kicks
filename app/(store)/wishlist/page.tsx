@@ -4,7 +4,7 @@ import { WishlistPageClient } from "@/components/wishlist/WishlistPageClient";
 
 export const metadata: Metadata = {
   title: "My Wishlist",
-  description: "View and manage your favorite sneakers and footwear saved at Musa Kicks.",
+  description: "View and manage your favorite products saved in your wishlist.",
 };
 
 export default async function WishlistPage() {

@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { AdminSidebar } from "./AdminSidebar";
 
-export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
+export function AdminLayoutClient({ children, storeName }: { children: React.ReactNode; storeName: string }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   return (
@@ -26,7 +26,7 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <AdminSidebar onClose={() => setIsMobileOpen(false)} />
+        <AdminSidebar storeName={storeName} onClose={() => setIsMobileOpen(false)} />
       </div>
 
       {/* Main Content Area */}
@@ -36,7 +36,7 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse" />
             <Link href="/admin" className="font-extrabold tracking-tight text-sm text-white">
-              MUSA KICKS ADMIN
+              {storeName} ADMIN
             </Link>
           </div>
           <button

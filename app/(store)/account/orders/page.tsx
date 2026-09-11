@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 
 export const metadata: Metadata = {
-  title: "My Orders — Musa Kicks",
+  title: "My Orders",
 };
 
 export default async function CustomerOrdersPage() {
@@ -26,10 +26,10 @@ export default async function CustomerOrdersPage() {
       <EmptyState
         icon={faShoppingBag}
         title="No orders yet"
-        description="You have not placed any orders with Musa Kicks yet. Start browsing our catalog!"
+        description={`You have not placed any orders with ${settings.brandName} yet. Start browsing our catalog!`}
         action={
           <Link href="/shop" className="btn btn-primary">
-            Shop Kicks
+            Browse Products
           </Link>
         }
       />

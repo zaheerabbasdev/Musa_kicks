@@ -8,7 +8,7 @@ import { faCircleCheck, faTruck, faArrowRight } from "@fortawesome/free-solid-sv
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
 export const metadata: Metadata = {
-  title: "Order Confirmation — Musa Kicks",
+  title: "Order Confirmation",
 };
 
 interface PageProps {
@@ -41,7 +41,7 @@ export default async function OrderConfirmationPage({ searchParams }: PageProps)
   const whatsappNumber = settings.whatsappNumber ?? "+92300000000";
 
   const whatsappMessage = encodeURIComponent(
-    `Hello Musa Kicks team! I placed order #${order.orderNumber} for total ${currencySymbol} ${Number(
+    `Hello ${settings.brandName} team! I placed order #${order.orderNumber} for total ${currencySymbol} ${Number(
       order.total
     ).toLocaleString()}. Please confirm my order dispatch.`
   );

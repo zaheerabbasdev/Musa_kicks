@@ -19,7 +19,7 @@ export default function NewCategoryPage() {
         <div>
           <h1 className="text-2xl font-bold">Add Category</h1>
           <p className="text-xs text-text-muted mt-0.5">
-            Create a category for the footwear catalog
+            Create a category for the product catalog
           </p>
         </div>
       </div>

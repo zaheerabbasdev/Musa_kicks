@@ -151,64 +151,6 @@ INSERT INTO `categories` (`id`, `name`, `slug`, `description`, `imageUrl`, `publ
 -- --------------------------------------------------------
 
 --
--- Table structure for table `loyalty_cycles`
---
-
-DROP TABLE IF EXISTS `loyalty_cycles`;
-CREATE TABLE IF NOT EXISTS `loyalty_cycles` (
-  `id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `userId` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `purchaseCount` int NOT NULL DEFAULT '0',
-  `requiredCount` int NOT NULL DEFAULT '4',
-  `status` enum('ACTIVE','COMPLETED') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ACTIVE',
-  `startedAt` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `completedAt` datetime(3) DEFAULT NULL,
-  `createdAt` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` datetime(3) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `loyalty_cycles_userId_idx` (`userId`),
-  KEY `loyalty_cycles_userId_status_idx` (`userId`,`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `loyalty_cycles`
---
-
-INSERT INTO `loyalty_cycles` (`id`, `userId`, `purchaseCount`, `requiredCount`, `status`, `startedAt`, `completedAt`, `createdAt`, `updatedAt`) VALUES
-('cmtt2emwa009svbs4sr4h9qux', 'cmtt2emju000ivbs4pfg43t6q', 3, 4, 'ACTIVE', '2026-06-10 19:30:59.048', NULL, '2026-09-08 19:30:59.051', '2026-09-08 19:30:59.051'),
-('cmtt2emwj009xvbs4gu5p8c0r', 'cmtt2emjx000jvbs4nq54c75r', 1, 4, 'ACTIVE', '2026-07-25 19:30:59.057', NULL, '2026-09-08 19:30:59.059', '2026-09-08 19:30:59.059');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `loyalty_purchases`
---
-
-DROP TABLE IF EXISTS `loyalty_purchases`;
-CREATE TABLE IF NOT EXISTS `loyalty_purchases` (
-  `id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cycleId` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `orderId` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `createdAt` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `loyalty_purchases_cycleId_orderId_key` (`cycleId`,`orderId`),
-  KEY `loyalty_purchases_cycleId_idx` (`cycleId`),
-  KEY `loyalty_purchases_orderId_fkey` (`orderId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `loyalty_purchases`
---
-
-INSERT INTO `loyalty_purchases` (`id`, `cycleId`, `orderId`, `createdAt`) VALUES
-('cmtt2emwf009tvbs4mxo1yiij', 'cmtt2emwa009svbs4sr4h9qux', 'cmtt2emuw0094vbs42jxoso38', '2026-09-08 19:30:59.055'),
-('cmtt2emwf009uvbs4fsuc0atc', 'cmtt2emwa009svbs4sr4h9qux', 'cmtt2emvd0098vbs4hjw8xydv', '2026-09-08 19:30:59.055'),
-('cmtt2emwf009vvbs443obrgh0', 'cmtt2emwa009svbs4sr4h9qux', 'cmtt2emvm009cvbs4asdygewj', '2026-09-08 19:30:59.055'),
-('cmtt2emwm009zvbs4x1q3x4pk', 'cmtt2emwj009xvbs4gu5p8c0r', 'cmtt2emvz009kvbs456rlvh2z', '2026-09-08 19:30:59.062');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `orders`
 --
 
@@ -689,30 +631,6 @@ INSERT INTO `product_variants` (`id`, `productId`, `size`, `color`, `colorHex`, 
 ('cmtvmgxm20004vb2kvx4p8b59', 'cmtvmd4au0001vb2knmfzbtaj', '25', 'Black', NULL, 'SKU2-BL-25', 10, '2026-09-10 14:28:10.921', '2026-09-10 14:28:10.921'),
 ('cmtvmgxm20006vb2kdtaogtwc', 'cmtvmd4au0001vb2knmfzbtaj', '42', 'blue', NULL, 'SKU2-BL-42', 10, '2026-09-10 14:28:10.921', '2026-09-10 14:28:10.921');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `rewards`
---
-
-DROP TABLE IF EXISTS `rewards`;
-CREATE TABLE IF NOT EXISTS `rewards` (
-  `id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `customerId` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` enum('LOCKED','AVAILABLE','CLAIMED','EXPIRED') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'AVAILABLE',
-  `claimedAt` datetime(3) DEFAULT NULL,
-  `expiresAt` datetime(3) DEFAULT NULL,
-  `createdAt` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` datetime(3) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `rewards_customerId_idx` (`customerId`),
-  KEY `rewards_status_idx` (`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
 --
 -- Table structure for table `site_settings`
 --
@@ -742,10 +660,6 @@ INSERT INTO `site_settings` (`id`, `key`, `value`, `createdAt`, `updatedAt`) VAL
 ('cmtt2ek5g0005vbs4vda27am5', 'whatsappOrderMessageTemplate', 'Hello Musa Kicks,\n\nI would like to place an order.\n\n{orderDetails}\n\nThank you.', '2026-09-08 19:30:55.492', '2026-09-08 19:30:55.492'),
 ('cmtt2ek5g0006vbs4z9a0ku6r', 'shippingFee', '200', '2026-09-08 19:30:55.492', '2026-09-08 19:30:55.492'),
 ('cmtt2ek5h0007vbs42c9mni9m', 'freeShippingThreshold', '5000', '2026-09-08 19:30:55.492', '2026-09-08 19:30:55.492'),
-('cmtt2ek5h0008vbs4been552e', 'loyaltyRequiredPurchases', '4', '2026-09-08 19:30:55.492', '2026-09-08 19:30:55.492'),
-('cmtt2ek5h0009vbs4gx9d72px', 'loyaltyRewardTitle', 'Special Musa Kicks Gift', '2026-09-08 19:30:55.492', '2026-09-08 19:30:55.492'),
-('cmtt2ek5h000avbs4nfbhgg4m', 'loyaltyRewardDescription', 'Congratulations! You have earned a special gift from Musa Kicks. Please WhatsApp us to claim your reward. We\'ll send you an exclusive pair or special merchandise.', '2026-09-08 19:30:55.492', '2026-09-08 19:30:55.492'),
-('cmtt2ek5h000bvbs4knpz99uj', 'loyaltyRewardExpirationDays', '90', '2026-09-08 19:30:55.492', '2026-09-08 19:30:55.492'),
 ('cmtt2ek5h000cvbs4viq43hyg', 'currency', 'PKR', '2026-09-08 19:30:55.492', '2026-09-08 19:30:55.492'),
 ('cmtt2ek5h000dvbs43rscfb4e', 'currencySymbol', 'Rs.', '2026-09-08 19:30:55.492', '2026-09-08 19:30:55.492'),
 ('cmtt2ek5h000evbs4mj4s0d6h', 'returnPeriodDays', '7', '2026-09-08 19:30:55.492', '2026-09-08 19:30:55.492'),
@@ -755,9 +669,6 @@ INSERT INTO `site_settings` (`id`, `key`, `value`, `createdAt`, `updatedAt`) VAL
 ('cmtvgqc8p0001vbugx79ybbzv', 'whatsapp_number', '+92300000000', '2026-09-10 11:47:32.090', '2026-09-10 11:47:53.549'),
 ('cmtvgqc8t0002vbugvgaztje4', 'shipping_fee', '250', '2026-09-10 11:47:32.094', '2026-09-10 11:47:53.556'),
 ('cmtvgqc8z0003vbug2fhyj37e', 'free_shipping_threshold', '10000', '2026-09-10 11:47:32.099', '2026-09-10 11:47:53.560'),
-('cmtvgqc950004vbugwqzjjhn8', 'loyalty_required_orders', '20', '2026-09-10 11:47:32.105', '2026-09-10 11:47:53.564'),
-('cmtvgqc9a0005vbug4h52kuol', 'loyalty_reward_title', 'Special Musa Kicks Gift', '2026-09-10 11:47:32.110', '2026-09-10 11:47:53.571'),
-('cmtvgqc9f0006vbugust6znqa', 'loyalty_reward_description', 'Congratulations! You\'ve unlocked an exclusive gift from Musa Kicks.', '2026-09-10 11:47:32.116', '2026-09-10 11:47:53.575'),
 ('cmtvgqc9l0007vbugv6l3oi47', 'store_address', 'Islamabad, Pakistan', '2026-09-10 11:47:32.121', '2026-09-10 11:47:53.579'),
 ('cmtvgqc9q0008vbugrroxndrd', 'currency_code', 'PKR', '2026-09-10 11:47:32.127', '2026-09-10 11:47:53.584'),
 ('cmtvgqc9v0009vbugw74xid40', 'currency_symbol', 'Rs.', '2026-09-10 11:47:32.131', '2026-09-10 11:47:53.589');

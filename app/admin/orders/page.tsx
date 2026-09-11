@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp as fabWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { Prisma } from "@prisma/client";
+import { OrderStatusAction } from "@/components/admin/OrderStatusAction";
 
 export const metadata: Metadata = { title: "Orders — Admin" };
 
@@ -125,6 +126,7 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
                     </td>
                     <td className="text-right">
                       <div className="flex justify-end">
+                        <OrderStatusAction orderId={order.id} status={order.status} />
                         <Link href={`/admin/orders/${order.id}`} className="btn btn-secondary btn-sm gap-1.5">
                           <FontAwesomeIcon icon={faEye} className="w-3 h-3" />
                           View

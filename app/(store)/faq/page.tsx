@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getSettings } from "@/lib/services/settings.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQuestionCircle, faTruck, faRotateLeft, faCreditCard, faShoePrints } from "@fortawesome/free-solid-svg-icons";
+import { faQuestionCircle, faTruck, faRotateLeft, faCreditCard, faBoxOpen } from "@fortawesome/free-solid-svg-icons";
 
-export const metadata: Metadata = {
-  title: "Frequently Asked Questions — Musa Kicks",
-  description: "Find answers about orders, delivery, sizing, returns, and WhatsApp ordering at Musa Kicks.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  return {
+    title: `Frequently Asked Questions — ${settings.brandName}`,
+    description: `Find answers about orders, delivery, product options, returns, and WhatsApp ordering at ${settings.brandName}.`,
+  };
+}
 
 const FAQS = [
   {
     category: "Ordering & WhatsApp",
-    icon: faShoePrints,
+    icon: faBoxOpen,
     items: [
       {
         q: "How do I order via WhatsApp?",
-        a: "Simply click the 'Order on WhatsApp' button on any product page or in your shopping cart. It prepares a pre-formatted message with your selected shoes, sizes, colors, and order totals. Our team confirms availability and your shipping address immediately.",
+        a: "Simply click the 'Order on WhatsApp' button on any product page or in your shopping cart. It prepares a pre-formatted message with your selected products, options, quantities, and order totals. Our team confirms availability and your shipping address immediately.",
       },
       {
         q: "Can I place an order directly on the website?",
@@ -38,16 +42,16 @@ const FAQS = [
     ],
   },
   {
-    category: "Sizing & Authenticity",
-    icon: faShoePrints,
+    category: "Product Quality",
+    icon: faBoxOpen,
     items: [
       {
-        q: "Are the sizes in EU or US?",
-        a: "All our footwear sizes are listed in standard EU sizing (EU 39 to EU 45). Each product page also contains a size selector guide with corresponding US and CM measurements.",
+        q: "How do I choose the right product options?",
+        a: "Review the options shown on each product page, including available sizes, colors, variants, or specifications. Contact us if you need help choosing.",
       },
       {
-        q: "Are your shoes 100% authentic and genuine quality?",
-        a: "Every pair sold at Musa Kicks undergoes strict multi-point physical inspections for build quality, sole cushion, and upper materials before dispatch.",
+        q: "How do you check product quality?",
+        a: "Every product is reviewed for quality, condition, and accurate details before dispatch.",
       },
     ],
   },
@@ -56,14 +60,15 @@ const FAQS = [
     icon: faRotateLeft,
     items: [
       {
-        q: "Can I exchange for a different size?",
-        a: "Yes, we offer an easy 7-day exchange window. As long as the pair is unworn with original packaging and tags attached, message us on WhatsApp and we will dispatch your replacement.",
+        q: "Can I exchange for a different option?",
+        a: "Yes, we offer an easy 7-day exchange window for eligible products. Message us on WhatsApp and our team will guide you through the process.",
       },
     ],
   },
 ];
 
-export default function FAQPage() {
+export default async function FAQPage() {
+  const settings = await getSettings();
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
       <div className="text-center max-w-2xl mx-auto mb-16">
@@ -74,7 +79,7 @@ export default function FAQPage() {
           Frequently Asked Questions
         </h1>
         <p className="text-text-muted mt-4 text-base sm:text-lg">
-          Everything you need to know about purchasing, delivery, and sizing at Musa Kicks.
+          Everything you need to know about purchasing, delivery, and product options at {settings.brandName}.
         </p>
       </div>
 
@@ -106,7 +111,7 @@ export default function FAQPage() {
       <div className="card p-8 mt-16 text-center border-accent/20 bg-surface-2/40">
         <h3 className="text-xl font-bold">Still have questions?</h3>
         <p className="text-text-muted text-sm mt-2 max-w-md mx-auto">
-          Can't find what you're looking for? Reach out directly to our support specialists.
+          Can&apos;t find what you&apos;re looking for? Reach out directly to our support specialists.
         </p>
         <Link href="/contact" className="btn btn-primary btn-md mt-6 inline-flex">
           Contact Support

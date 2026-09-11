@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getSettings } from "@/lib/services/settings.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAward,
@@ -9,13 +10,16 @@ import {
   faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 
-export const metadata: Metadata = {
-  title: "About Us — Musa Kicks",
-  description:
-    "Learn about Musa Kicks — where premium sneaker culture meets street luxury craftsmanship.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  return {
+    title: `About Us — ${settings.brandName}`,
+    description: `Learn about ${settings.brandName} — a thoughtful destination for quality products and modern everyday living.`,
+  };
+}
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const settings = await getSettings();
   return (
     <div className="container-site py-12 md:py-10">
       {/* Hero */}
@@ -24,11 +28,11 @@ export default function AboutPage() {
           Our Story
         </span>
         <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tight">
-          Crafting the Culture of <span className="gradient-text">Footwear</span>
+          Curating the Culture of <span className="gradient-text">Everyday Living</span>
         </h1>
         <p className="mt-6! ml-22! max-w-2xl mx-auto text-center text-lg sm:text-xl text-neutral-600 leading-relaxed">
-          Musa Kicks was born from an obsession with authentic sneaker craftsmanship,
-          uncompromising silhouettes, and modern street aesthetics.
+          {settings.brandName} was born from a belief that useful products can also be expressive,
+          well-made, and enjoyable to bring into your everyday life.
         </p>
       </section>
 
@@ -41,7 +45,7 @@ export default function AboutPage() {
             </div>
             <h3 className="font-bold text-lg mb-2 text-neutral-900">100% Authentic</h3>
             <p className="text-neutral-500 text-sm leading-relaxed">
-              Every pair is verified for premium stitching, high-grade materials, and true-to-fit sizing.
+              Every product is selected for dependable materials, thoughtful details, and lasting value.
             </p>
           </div>
 
@@ -61,7 +65,7 @@ export default function AboutPage() {
             </div>
             <h3 className="font-bold text-lg mb-2 text-neutral-900">Direct WhatsApp Service</h3>
             <p className="text-neutral-500 text-sm leading-relaxed">
-              Talk directly to real human footwear specialists to check sizing or place custom requests.
+              Talk directly to real people for product questions, recommendations, or custom requests.
             </p>
           </div>
 
@@ -71,7 +75,7 @@ export default function AboutPage() {
             </div>
             <h3 className="font-bold text-lg mb-2 text-neutral-900">Hassle-Free Exchanges</h3>
             <p className="text-neutral-500 text-sm leading-relaxed">
-              Size not quite right? Easily exchange within 7 days for the ideal fit.
+              Changed your mind? Easily exchange eligible products within 7 days.
             </p>
           </div>
         </div>
@@ -82,7 +86,7 @@ export default function AboutPage() {
         <div className="card p-8 md:p-14 border border-neutral-200 bg-neutral-950 text-white rounded-3xl relative overflow-hidden">
           <div className="relative z-10">
             <h2 className="text-3xl sm:text-4xl font-extrabold uppercase mb-4 text-white">
-              Step Into Your Next Favorite Pair
+              Find Your Next Favorite
             </h2>
             <p className="text-neutral-300 max-w-xl mx-auto mb-8! text-black! ml-22! text-base">
               Explore our latest drops and elevated streetwear essentials.

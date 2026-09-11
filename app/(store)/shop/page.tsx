@@ -10,8 +10,8 @@ import { SortDropdown } from "@/components/products/SortDropdown";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Shop All Shoes",
-  description: "Browse our full collection of premium footwear including sneakers, casual, running, formal, boots, and slides.",
+  title: "Shop All Products",
+  description: "Browse the complete collection of products, essentials, and new arrivals.",
 };
 
 const SORT_OPTIONS = [
@@ -85,7 +85,7 @@ export default async function ShopPage({ searchParams }: PageProps) {
             ? categories.find((c) => c.slug === currentCategory)?.name ?? "Shop"
             : searchQuery
             ? `Results for "${searchQuery}"`
-            : "All Shoes"}
+            : "All Products"}
         </h1>
         <p style={{ color: "var(--muted-foreground)" }}>
           {total} {total === 1 ? "style" : "styles"} available

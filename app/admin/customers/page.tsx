@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db/prisma";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUsers, faEnvelope, faPhone, faGift } from "@fortawesome/free-solid-svg-icons";
+import { faUsers, faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 
 export const metadata: Metadata = {
   title: "Customers — Admin",
@@ -13,8 +13,8 @@ export default async function AdminCustomersPage() {
     orderBy: { createdAt: "desc" },
     include: {
       _count: { select: { orders: true } },
-      loyaltyCycles: {
-        where: { status: "ACTIVE" },
+      addresses: {
+        orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
         take: 1,
       },
     },
@@ -25,7 +25,7 @@ export default async function AdminCustomersPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-display font-bold">Customer Directory</h1>
         <p style={{ color: "var(--muted-foreground)" }}>
-          {customers.length} registered customers with orders and loyalty status
+          {customers.length} registered customers with orders
         </p>
       </div>
 
@@ -36,14 +36,13 @@ export default async function AdminCustomersPage() {
               <tr>
                 <th>Customer</th>
                 <th>Contact</th>
+                <th>Address</th>
                 <th>Orders</th>
-                <th>Loyalty Progress</th>
                 <th>Member Since</th>
               </tr>
             </thead>
             <tbody>
               {customers.map((c) => {
-                const cycle = c.loyaltyCycles[0];
                 return (
                   <tr key={c.id} className="hover:bg-surface-2/50 transition-colors">
                     <td>
@@ -71,31 +70,20 @@ export default async function AdminCustomersPage() {
                         )}
                       </div>
                     </td>
+                    <td className="text-xs text-text-muted max-w-[220px]">
+                      {c.addresses[0] ? (
+                        <div>
+                          <p>{c.addresses[0].recipientName}</p>
+                          <p>{c.addresses[0].line1}{c.addresses[0].line2 ? `, ${c.addresses[0].line2}` : ""}</p>
+                          <p>{c.addresses[0].city}, {c.addresses[0].province}</p>
+                        </div>
+                      ) : (
+                        <span>No address</span>
+                      )}
+                    </td>
                     <td>
                       <span className="font-bold text-sm">{c._count.orders}</span>
                       <span className="text-xs text-text-muted ml-1">orders</span>
-                    </td>
-                    <td>
-                      {cycle ? (
-                        <div className="flex items-center gap-2">
-                          <div className="w-20 bg-surface-2 rounded-full h-2 overflow-hidden border border-border">
-                            <div
-                              className="bg-accent h-full rounded-full"
-                              style={{
-                                width: `${Math.min(
-                                  100,
-                                  (cycle.purchaseCount / cycle.requiredCount) * 100
-                                )}%`,
-                              }}
-                            />
-                          </div>
-                          <span className="text-xs font-semibold">
-                            {cycle.purchaseCount}/{cycle.requiredCount}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-xs text-text-muted">No cycle</span>
-                      )}
                     </td>
                     <td className="text-xs text-text-muted">
                       {new Date(c.createdAt).toLocaleDateString("en-US", {

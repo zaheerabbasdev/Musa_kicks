@@ -16,7 +16,6 @@ interface BadgeProps {
   children: React.ReactNode;
   className?: string;
 }
-
 const variantClass: Record<BadgeVariant, string> = {
   "new":         "bg-neutral-900 text-white border border-neutral-700/50 shadow-sm",
   "best-seller": "bg-amber-500 text-black font-extrabold shadow-sm",
@@ -47,18 +46,6 @@ export function OrderStatusBadge({ status }: { status: string }) {
     DELIVERED:  "success",
     CANCELLED:  "error",
     RETURNED:   "error",
-  };
-  const variant = map[status] ?? "muted";
-  return <Badge variant={variant}>{status}</Badge>;
-}
-
-// Reward status badge
-export function RewardStatusBadge({ status }: { status: string }) {
-  const map: Record<string, BadgeVariant> = {
-    LOCKED:    "muted",
-    AVAILABLE: "success",
-    CLAIMED:   "primary",
-    EXPIRED:   "error",
   };
   const variant = map[status] ?? "muted";
   return <Badge variant={variant}>{status}</Badge>;

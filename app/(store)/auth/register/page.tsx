@@ -41,7 +41,7 @@ export default function RegisterPage() {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-display font-bold mb-2">Create Account</h1>
             <p style={{ color: "var(--muted-foreground)" }}>
-              Join Musa Kicks and start earning rewards
+              Join our store and discover products made for everyday life
             </p>
           </div>
 
