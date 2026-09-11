@@ -34,16 +34,14 @@ const slides = [
 
 export function HeroCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const slide = slides[activeIndex];
 
   useEffect(() => {
-    if (isPaused) return;
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % slides.length);
     }, 3000);
     return () => window.clearInterval(timer);
-  }, [isPaused]);
+  }, []);
 
   const goTo = (index: number) => setActiveIndex((index + slides.length) % slides.length);
 
@@ -51,8 +49,6 @@ export function HeroCarousel() {
     <section
       className="relative isolate overflow-hidden bg-neutral-950 text-white"
       aria-label="Featured collections"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
     >
       <div className="absolute inset-0">
         {slides.map((item, index) => (
