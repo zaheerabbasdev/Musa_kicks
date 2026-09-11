@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFloppyDisk, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faFloppyDisk, faCheckCircle, faPencil } from "@fortawesome/free-solid-svg-icons";
 
 interface SettingsFormProps {
   initialSettings: Record<string, string>;
@@ -12,6 +12,7 @@ interface SettingsFormProps {
 export function SettingsForm({ initialSettings }: SettingsFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,6 +49,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
       }
 
       setSaved(true);
+      setEditing(false);
       router.refresh();
       setTimeout(() => setSaved(false), 4000);
     } catch (err: any) {
@@ -56,6 +58,49 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
       setLoading(false);
     }
   };
+
+  if (!editing) {
+    return (
+      <div className="space-y-6 max-w-4xl">
+        <div className="flex justify-end">
+          <button type="button" onClick={() => setEditing(true)} className="btn btn-primary flex items-center gap-2">
+            <FontAwesomeIcon icon={faPencil} />
+            Edit Settings
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <section className="card p-6 space-y-4">
+            <h2 className="text-lg font-bold">General Store Information</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <PreviewItem label="Store Name" value={formData.site_name} />
+              <PreviewItem label="WhatsApp Number" value={formData.whatsapp_number} />
+            </div>
+            <PreviewItem label="Store Location" value={formData.store_address} />
+          </section>
+
+          <section className="card p-6 space-y-4">
+            <h2 className="text-lg font-bold">Shipping & Currency</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <PreviewItem label="Shipping Fee" value={`${formData.currency_symbol} ${formData.shipping_fee}`} />
+              <PreviewItem label="Free Shipping From" value={`${formData.currency_symbol} ${formData.free_shipping_threshold}`} />
+              <PreviewItem label="Currency Code" value={formData.currency_code} />
+              <PreviewItem label="Currency Symbol" value={formData.currency_symbol} />
+            </div>
+          </section>
+
+          <section className="card p-6 space-y-4 lg:col-span-2">
+            <h2 className="text-lg font-bold">Loyalty Program Settings</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <PreviewItem label="Orders Required" value={formData.loyalty_required_orders} />
+              <PreviewItem label="Reward Title" value={formData.loyalty_reward_title} />
+              <PreviewItem label="Reward Description" value={formData.loyalty_reward_description} />
+            </div>
+          </section>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
@@ -219,15 +264,25 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
       </div>
 
       <div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="btn btn-primary flex items-center gap-2"
-        >
-          <FontAwesomeIcon icon={faFloppyDisk} />
-          <span>{loading ? "Saving Settings..." : "Save Settings"}</span>
-        </button>
+        <div className="flex gap-3">
+          <button type="button" onClick={() => setEditing(false)} className="btn btn-secondary">
+            Cancel
+          </button>
+          <button type="submit" disabled={loading} className="btn btn-primary flex items-center gap-2">
+            <FontAwesomeIcon icon={faFloppyDisk} />
+            <span>{loading ? "Saving Settings..." : "Save Settings"}</span>
+          </button>
+        </div>
       </div>
     </form>
+  );
+}
+
+function PreviewItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="space-y-1">
+      <p className="text-xs font-bold uppercase tracking-wider text-text-muted">{label}</p>
+      <p className="text-sm font-medium break-words">{value || "Not configured"}</p>
+    </div>
   );
 }
