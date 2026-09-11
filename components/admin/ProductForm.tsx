@@ -431,9 +431,11 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
                 <button
                   type="button"
                   onClick={() => removeImage(index)}
-                  className="absolute top-2 right-2 w-7 h-7 rounded-full bg-danger/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  aria-label={`Delete product image ${index + 1}`}
+                  className="absolute top-2 right-2 z-20 min-w-8 h-8 px-2 rounded-full bg-red-600 text-white border-2 border-white flex items-center justify-center gap-1 shadow-lg hover:bg-red-700 transition-colors"
                 >
                   <FontAwesomeIcon icon={faTrash} className="text-xs" />
+                  <span className="text-[10px] font-bold">Delete</span>
                 </button>
               </div>
             ))}
