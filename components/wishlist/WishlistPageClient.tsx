@@ -7,10 +7,16 @@ import { faHeart, faArrowRight, faTrash } from "@fortawesome/free-solid-svg-icon
 import { useWishlistStore } from "@/store/wishlist.store";
 import { ProductCard } from "@/components/products/ProductCard";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { toast } from "react-toastify";
 
 export function WishlistPageClient({ currencySymbol }: { currencySymbol: string }) {
   const [mounted, setMounted] = useState(false);
   const { items, clearWishlist } = useWishlistStore();
+
+  const handleClearWishlist = () => {
+    clearWishlist();
+    toast.success("Wishlist cleared.");
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -43,7 +49,7 @@ export function WishlistPageClient({ currencySymbol }: { currencySymbol: string 
 
         {items.length > 0 && (
           <button
-            onClick={clearWishlist}
+            onClick={handleClearWishlist}
             className="btn btn-secondary btn-sm flex items-center gap-2 text-danger hover:bg-danger/10"
           >
             <FontAwesomeIcon icon={faTrash} />

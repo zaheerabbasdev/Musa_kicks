@@ -9,6 +9,7 @@ import { SizeSelector } from "@/components/products/SizeSelector";
 import { ColorSelector, QuantitySelector } from "@/components/products/ColorSelector";
 import { useCartStore } from "@/store/cart.store";
 import type { ProductWithImages } from "@/types";
+import { toast } from "react-toastify";
 
 interface AddToCartProps {
   product: ProductWithImages;
@@ -63,11 +64,11 @@ export function AddToCartSection({
 
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor || !selectedVariant) {
-      alert(!selectedColor ? "Please select a color" : "Please select a size");
+      toast.error(!selectedColor ? "Please select a color" : "Please select a size");
       return;
     }
     if (selectedVariant.stock < quantity) {
-      alert("Not enough stock available");
+      toast.error("Not enough stock available");
       return;
     }
 
@@ -86,6 +87,7 @@ export function AddToCartSection({
     });
 
     setAddedFeedback(true);
+    toast.success(`${product.name} added to your cart.`);
     setTimeout(() => setAddedFeedback(false), 2000);
     openCart();
   };
@@ -172,7 +174,13 @@ export function AddToCartSection({
         </button>
 
         <button
-          onClick={() => setIsWishlisted(!isWishlisted)}
+          onClick={() => {
+            const nextWishlisted = !isWishlisted;
+            setIsWishlisted(nextWishlisted);
+            toast.success(
+              nextWishlisted ? "Added to your wishlist." : "Removed from your wishlist."
+            );
+          }}
           className="btn btn-secondary btn-lg w-full justify-center"
           id="wishlist-btn"
         >
