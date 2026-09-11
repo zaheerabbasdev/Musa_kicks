@@ -41,7 +41,7 @@ export function HeroCarousel() {
     if (isPaused) return;
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % slides.length);
-    }, 5000);
+    }, 3000);
     return () => window.clearInterval(timer);
   }, [isPaused]);
 
@@ -69,7 +69,7 @@ export function HeroCarousel() {
         <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/85 via-neutral-950/50 to-neutral-950/10" />
       </div>
 
-      <div className="container-site relative flex min-h-[480px] items-center py-16 md:min-h-[560px] md:py-20">
+      <div className="container-site relative flex min-h-[480px] items-center py-16 md:min-h-[560px] mt-15 md:py-28">
         <div className="max-w-2xl">
           <p className="mb-5 text-xs font-black uppercase tracking-[0.28em] text-orange-300">
             {slide.eyebrow}
