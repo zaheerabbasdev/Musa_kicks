@@ -16,6 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { siteConfig } from "@/config/site";
 import { useCartStore } from "@/store/cart.store";
+import { useWishlistStore } from "@/store/wishlist.store";
 import { useSession, signOut } from "next-auth/react";
 
 export function Navbar() {
@@ -28,6 +29,7 @@ export function Navbar() {
   const router = useRouter();
   const { data: session } = useSession();
   const cartCount = useCartStore((s) => s.totalItems);
+  const wishlistCount = useWishlistStore((s) => s.items.length);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 10);
@@ -140,8 +142,20 @@ export function Navbar() {
             </button>
 
             {/* Wishlist */}
-            <Link href="/wishlist" className="btn btn-ghost btn-icon relative" aria-label="Wishlist">
+            <Link
+              href="/wishlist"
+              className="btn btn-ghost btn-icon relative"
+              aria-label={`Wishlist (${wishlistCount} items)`}
+            >
               <FontAwesomeIcon icon={faHeart} className="w-4.5 h-4.5" />
+              {wishlistCount > 0 && (
+                <span
+                  className="absolute -top-1 -right-1 w-4.5 h-4.5 rounded-full text-[10px] font-bold flex items-center justify-center"
+                  style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+                >
+                  {wishlistCount > 99 ? "99+" : wishlistCount}
+                </span>
+              )}
             </Link>
 
             {/* Cart */}
