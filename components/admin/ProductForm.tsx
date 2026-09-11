@@ -151,6 +151,10 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
     try {
       const payload = {
         ...formData,
+        name: formData.name.trim(),
+        sku: formData.sku.trim().toUpperCase(),
+        categoryId: formData.categoryId.trim(),
+        description: formData.description.trim(),
         price: parseFloat(formData.price),
         compareAtPrice: formData.compareAtPrice ? parseFloat(formData.compareAtPrice) : null,
         costPrice: formData.costPrice ? parseFloat(formData.costPrice) : null,
@@ -161,8 +165,12 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
         })),
         variants: variants.map((v) => ({
           ...v,
+          color: v.color.trim(),
+          size: v.size.trim(),
           stock: Number(v.stock),
-          sku: v.sku || `${formData.sku}-${v.color.substring(0, 2).toUpperCase()}-${v.size}`,
+          sku:
+            v.sku.trim().toUpperCase() ||
+            `${formData.sku.trim().toUpperCase()}-${v.color.trim().substring(0, 2)}-${v.size.trim()}`,
         })),
       };
 
@@ -177,8 +185,8 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
       );
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Failed to save product");
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.message || "Failed to save product");
       }
 
       router.push("/admin/products");
@@ -238,6 +246,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
               Category *
             </label>
             <select
+              required
               value={formData.categoryId}
               onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
               className="input w-full"
@@ -301,6 +310,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
           </label>
           <textarea
             rows={4}
+            required
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             className="input w-full py-2.5 resize-none"
@@ -452,6 +462,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
               <div className="flex-1 min-w-[120px]">
                 <input
                   type="text"
+                  required
                   placeholder="Color (e.g. Black)"
                   value={v.color}
                   onChange={(e) => {
@@ -466,6 +477,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
               <div className="w-24">
                 <input
                   type="text"
+                  required
                   placeholder="Size (42)"
                   value={v.size}
                   onChange={(e) => {
