@@ -16,6 +16,12 @@ interface ProductFormProps {
   initialData?: any;
 }
 
+interface ProductImageEntry {
+  id?: string;
+  url: string;
+  publicId?: string;
+}
+
 export function ProductForm({ categories, initialData }: ProductFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -39,26 +45,31 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
   const [uploadingImages, setUploadingImages] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [pendingImagePreviews, setPendingImagePreviews] = useState<string[]>([]);
-  const [images, setImages] = useState<string[]>(
-    initialData?.images?.map((img: any) => img.url ?? img.imageUrl) ?? []
+  const [images, setImages] = useState<ProductImageEntry[]>(
+    initialData?.images?.map((img: ProductImageEntry) => ({
+      id: img.id,
+      url: img.url ?? (img as ProductImageEntry & { imageUrl?: string }).imageUrl ?? "",
+      publicId: img.publicId,
+    })) ?? []
   );
 
   const [variants, setVariants] = useState<
-    Array<{ color: string; size: string; stock: number; sku: string }>
+    Array<{ color: string; size: string; stock: number; sku: string; imageUrl: string }>
   >(
     initialData?.variants?.map((v: any) => ({
       color: v.color,
       size: v.size,
       stock: v.stock,
       sku: v.sku,
+      imageUrl: v.imageUrl ?? "",
     })) ?? [
-      { color: "Black", size: "42", stock: 10, sku: "" },
-      { color: "Black", size: "43", stock: 10, sku: "" },
+      { color: "Black", size: "42", stock: 10, sku: "", imageUrl: "" },
+      { color: "Black", size: "43", stock: 10, sku: "", imageUrl: "" },
     ]
   );
 
   const addVariant = () => {
-    setVariants([...variants, { color: "White", size: "42", stock: 10, sku: "" }]);
+    setVariants([...variants, { color: "White", size: "42", stock: 10, sku: "", imageUrl: "" }]);
   };
 
   const removeVariant = (index: number) => {
@@ -119,7 +130,9 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
       }
 
       setImages((currentImages) =>
-        initialData ? uploadedImages : [...currentImages, ...uploadedImages]
+        initialData
+          ? uploadedImages.map((url) => ({ url }))
+          : [...currentImages, ...uploadedImages.map((url) => ({ url }))]
       );
       setPendingImagePreviews([]);
       previewUrls.forEach((previewUrl) => URL.revokeObjectURL(previewUrl));
@@ -131,8 +144,35 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
     }
   };
 
-  const removeImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index));
+  const removeImage = async (index: number) => {
+    const image = images[index];
+    setImages((currentImages) => currentImages.filter((_, i) => i !== index));
+    setVariants((currentVariants) =>
+      currentVariants.map((variant) =>
+        variant.imageUrl === image.url ? { ...variant, imageUrl: "" } : variant
+      )
+    );
+
+    if (!image.id || !image.publicId) return;
+
+    try {
+      const response = await fetch("/api/cloudinary/delete", {
+        method: "DELETE",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageId: image.id, publicId: image.publicId }),
+      });
+      if (!response.ok) {
+        throw new Error("The image could not be deleted from storage.");
+      }
+    } catch (err) {
+      setImages((currentImages) => {
+        const restored = [...currentImages];
+        restored.splice(index, 0, image);
+        return restored;
+      });
+      setError(err instanceof Error ? err.message : "The image could not be deleted.");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -160,8 +200,9 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
         price: parseFloat(formData.price),
         compareAtPrice: formData.compareAtPrice ? parseFloat(formData.compareAtPrice) : null,
         costPrice: formData.costPrice ? parseFloat(formData.costPrice) : null,
-        images: images.map((url, i) => ({
-          url,
+        images: images.map((image, i) => ({
+          url: image.url,
+          publicId: image.publicId,
           isPrimary: i === 0,
           sortOrder: i,
         })),
@@ -413,13 +454,13 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
 
         {images.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
-            {images.map((url, index) => (
+            {images.map((image, index) => (
               <div
                 key={index}
                 className="relative group rounded-xl overflow-hidden aspect-square border border-border bg-surface-2"
               >
                 <img
-                  src={url}
+                  src={image.url}
                   alt={`Product preview ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
