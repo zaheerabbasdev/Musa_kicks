@@ -11,7 +11,6 @@ import {
   faShoppingCart,
   faHeart,
   faUser,
-  faChevronDown,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { siteConfig } from "@/config/site";
@@ -126,31 +125,6 @@ export function Navbar() {
               </Link>
             ))}
 
-            {/* Categories dropdown */}
-            <div className="relative group">
-              <button
-                className="nav-link text-xs font-bold uppercase tracking-wider flex items-center gap-1.5"
-                aria-haspopup="true"
-              >
-                Categories
-                <FontAwesomeIcon icon={faChevronDown} className="w-2.5 h-2.5 transition-transform group-hover:rotate-180" />
-              </button>
-              <div
-                className="absolute top-full left-0 mt-2 w-56 border border-neutral-200/90 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50"
-                style={{ backgroundColor: "#ffffff" }}
-              >
-                {siteConfig.nav.categories.map((cat) => (
-                  <Link
-                    key={cat.href}
-                    href={cat.href}
-                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-neutral-800 hover:text-neutral-950 hover:bg-neutral-100 transition-colors"
-                  >
-                    <span>{cat.label}</span>
-                    <span className="text-neutral-400 text-xs">→</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
           </nav>
 
           {/* Actions */}
@@ -295,18 +269,6 @@ export function Navbar() {
                 className="block px-3 py-2.5 text-base font-medium rounded-[var(--radius-md)] hover:bg-[var(--muted)] transition-colors"
               >
                 {item.label}
-              </Link>
-            ))}
-            <p className="text-xs font-semibold uppercase tracking-widest mt-4 mb-2 px-3" style={{ color: "var(--muted-foreground)" }}>
-              Categories
-            </p>
-            {siteConfig.nav.categories.map((cat) => (
-              <Link
-                key={cat.href}
-                href={cat.href}
-                className="flex items-center gap-2 px-3 py-2.5 text-base rounded-[var(--radius-md)] hover:bg-[var(--muted)] transition-colors"
-              >
-                <span>{cat.icon}</span> {cat.label}
               </Link>
             ))}
           </nav>

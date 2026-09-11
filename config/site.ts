@@ -34,6 +34,7 @@ export const siteConfig = {
       { label: "New Arrivals", href: "/shop?sort=newest" },
       { label: "Best Sellers", href: "/shop?sort=popular" },
       { label: "About", href: "/about" },
+      { label: "Contact", href: "/contact" },
     ],
     categories: [
       { label: "Sneakers", href: "/shop/sneakers", icon: "" },
