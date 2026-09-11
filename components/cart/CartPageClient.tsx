@@ -53,8 +53,8 @@ export function CartPageClient({ settings }: CartPageClientProps) {
           <h2 className="text-lg font-semibold">{items.length} Item{items.length !== 1 ? "s" : ""}</h2>
           <button
             onClick={clearCart}
-            className="text-sm text-[var(--error)] hover:underline"
-          >
+            className="btn btn-secondary btn-sm flex items-center gap-2 text-danger hover:bg-danger/10">
+            <FontAwesomeIcon icon={faTrash} />
             Clear Cart
           </button>
         </div>
