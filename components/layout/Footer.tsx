@@ -135,7 +135,15 @@ export function Footer() {
       >
         <div className="container-site flex flex-col md:flex-row items-center justify-between gap-2 text-sm opacity-60">
           <p>© {year} Musa Kicks. All rights reserved.</p>
-          <p>Premium footwear, delivered with care.</p>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/return-refund"
+              className="font-semibold opacity-100 hover:text-orange-400 transition-colors"
+            >
+              Returns & Refunds
+            </Link>
+            <p>Premium footwear, delivered with care.</p>
+          </div>
         </div>
       </div>
     </footer>

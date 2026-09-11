@@ -15,7 +15,7 @@ export default async function ContactPage() {
   const storeAddress = settings.brandAddress ?? "Islamabad, Pakistan";
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+    <div className="w-full px-4 sm:px-6 lg:px-12 py-12 md:py-20">
       <div className="text-center max-w-2xl mx-auto mb-16">
         <span className="badge badge-accent uppercase tracking-widest text-xs mb-3">
           Get in Touch
