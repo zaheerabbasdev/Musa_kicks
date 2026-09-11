@@ -29,6 +29,30 @@ interface ProductCardProps {
   currencySymbol?: string;
 }
 
+const namedColors: Record<string, string> = {
+  black: "#000000",
+  white: "#ffffff",
+  blue: "#2563eb",
+  red: "#dc2626",
+  green: "#16a34a",
+  yellow: "#facc15",
+  orange: "#f97316",
+  brown: "#92400e",
+  beige: "#d6c2a1",
+  gray: "#9ca3af",
+  grey: "#9ca3af",
+  purple: "#9333ea",
+  pink: "#ec4899",
+  navy: "#1e3a8a",
+  maroon: "#7f1d1d",
+};
+
+function getSwatchColor(color: string, colorHex?: string | null) {
+  if (colorHex) return colorHex;
+  const normalizedColor = color.trim().toLowerCase();
+  return namedColors[normalizedColor] ?? normalizedColor;
+}
+
 export function ProductCard({
   id,
   slug,
@@ -153,7 +177,10 @@ export function ProductCard({
                     key={color}
                     title={color}
                     className="w-2.5 h-2.5 rounded-full border border-neutral-300 shadow-2xs"
-                    style={{ background: hex ?? "#888" }}
+                    style={{
+                      background: getSwatchColor(color, hex),
+                      borderColor: color.trim().toLowerCase() === "white" ? "#d1d5db" : undefined,
+                    }}
                   />
                 ))}
               </div>
