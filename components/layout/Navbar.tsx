@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
@@ -25,6 +25,7 @@ export function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session } = useSession();
   const cartCount = useCartStore((s) => s.totalItems);
 
@@ -53,6 +54,15 @@ export function Navbar() {
 
   const isAdminPage = pathname.startsWith("/admin");
   if (isAdminPage) return null;
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const query = searchQuery.trim();
+    const searchUrl = query ? `/shop?search=${encodeURIComponent(query)}` : "/shop";
+
+    setIsSearchOpen(false);
+    router.push(searchUrl);
+  };
 
   return (
     <>
@@ -287,14 +297,13 @@ export function Navbar() {
       {isSearchOpen && (
         <div className="fixed inset-0 z-[200] flex items-start justify-center pt-24 px-4">
           <div
-            className="absolute inset-0 overlay visible"
+            className="absolute inset-0 bg-neutral-950/72"
             onClick={() => setIsSearchOpen(false)}
           />
-          <div className="relative w-full max-w-lg animate-slide-down">
+          <div className="relative w-full max-w-2xl rounded-2xl bg-white p-3 shadow-2xl animate-slide-down">
             <form
-              action="/shop"
-              className="flex gap-2"
-              onSubmit={() => setIsSearchOpen(false)}
+              className="flex items-center gap-2"
+              onSubmit={handleSearchSubmit}
             >
               <input
                 autoFocus
@@ -303,16 +312,17 @@ export function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search shoes..."
-                className="input text-base py-3 px-4 pr-12"
+                className="input min-w-0 flex-1 bg-white text-base py-3 px-4 pr-12 text-neutral-900 placeholder:text-neutral-400"
                 aria-label="Search products"
               />
-              <button type="submit" className="btn btn-primary px-5">
+              <button type="submit" className="btn btn-primary shrink-0 px-5" aria-label="Submit search">
                 <FontAwesomeIcon icon={faSearch} className="w-4 h-4" />
               </button>
               <button
                 type="button"
                 onClick={() => setIsSearchOpen(false)}
-                className="btn btn-ghost btn-icon"
+                className="btn btn-ghost btn-icon shrink-0 text-neutral-700"
+                aria-label="Close search"
               >
                 <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
               </button>
