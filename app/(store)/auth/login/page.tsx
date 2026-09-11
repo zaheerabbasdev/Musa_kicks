@@ -3,8 +3,8 @@
 import { useState, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getSession, signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -15,7 +15,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 function LoginForm() {
   const [showPw, setShowPw] = useState(false);
   const [authError, setAuthError] = useState("");
-  const router = useRouter();
+  const { update } = useSession();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/account";
 
@@ -29,6 +29,8 @@ function LoginForm() {
 
   const onSubmit = async (data: LoginInput) => {
     setAuthError("");
+    await signOut({ redirect: false });
+
     const result = await signIn("credentials", {
       email: data.email,
       password: data.password,
@@ -38,13 +40,12 @@ function LoginForm() {
     if (result?.error) {
       setAuthError("Invalid email or password");
     } else {
-      const session = await getSession();
+      const session = await update();
       const destination =
         !searchParams.get("callbackUrl") && session?.user?.role === "ADMIN"
           ? "/admin"
           : callbackUrl;
-      router.push(destination);
-      router.refresh();
+      window.location.assign(destination);
     }
   };
 
