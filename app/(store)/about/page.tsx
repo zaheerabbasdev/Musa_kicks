@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="container-site py-12 md:py-20">
+    <div className="container-site py-12 md:py-10">
       {/* Hero */}
       <section className="max-w-4xl mx-auto text-center mb-16 md:mb-20">
         <span className="badge badge-accent uppercase tracking-widest text-xs mb-4">

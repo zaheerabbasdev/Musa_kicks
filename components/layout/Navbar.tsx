@@ -322,7 +322,7 @@ export function Navbar() {
       )}
 
       {/* Spacer */}
-      <div style={{ height: "var(--nav-height)" }} />
+      
     </>
   );
 }
