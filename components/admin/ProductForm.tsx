@@ -118,8 +118,10 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
         uploadedImages.push(uploaded.secure_url);
       }
 
-      setImages((currentImages) => [...currentImages, ...uploadedImages]);
-      setPendingImagePreviews(uploadedImages);
+      setImages((currentImages) =>
+        initialData ? uploadedImages : [...currentImages, ...uploadedImages]
+      );
+      setPendingImagePreviews([]);
       previewUrls.forEach((previewUrl) => URL.revokeObjectURL(previewUrl));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to upload images.");
@@ -378,16 +380,18 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
           />
           <label
             htmlFor="product-image-upload"
-            className={`btn btn-secondary flex-1 cursor-pointer ${uploadingImages ? "pointer-events-none opacity-60" : ""}`}
+            className={`btn btn-secondary btn-sm cursor-pointer ${uploadingImages ? "pointer-events-none opacity-60" : ""}`}
           >
-            {uploadingImages ? "Uploading..." : "Add Images"}
+            {uploadingImages ? "Uploading..." : initialData ? "Update Images" : "Add Images"}
           </label>
         </div>
         <p className="text-xs text-text-muted">
-          Select one or more local JPG, PNG, WebP, or AVIF images. The first image is used as the primary image.
+          {initialData
+            ? "Select replacement JPG, PNG, WebP, or AVIF images. Uploading replaces the current images; the first image becomes primary."
+            : "Select one or more local JPG, PNG, WebP, or AVIF images. The first image is used as the primary image."}
         </p>
 
-        {pendingImagePreviews.length > 0 && (
+        {uploadingImages && pendingImagePreviews.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
             {pendingImagePreviews.map((previewUrl, index) => (
               <div
