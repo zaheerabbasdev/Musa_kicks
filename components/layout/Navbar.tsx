@@ -66,6 +66,15 @@ export function Navbar() {
     router.push(searchUrl);
   };
 
+  const handleAccountNavigation = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    event.preventDefault();
+    setIsUserMenuOpen(false);
+    router.push(href);
+  };
+
   return (
     <>
       <header
@@ -194,12 +203,21 @@ export function Navbar() {
                         <p className="text-xs text-[var(--muted-foreground)] truncate">{session.user.email}</p>
                       </div>
                       {session.user.role === "ADMIN" && (
-                        <Link href="/admin" className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-[var(--muted)] transition-colors">
+                        <Link
+                          href="/admin"
+                          onClick={(event) => handleAccountNavigation(event, "/admin")}
+                          className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-[var(--muted)] transition-colors"
+                        >
                           Admin Dashboard
                         </Link>
                       )}
                       {siteConfig.nav.account.map((item) => (
-                        <Link key={item.href} href={item.href} className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-[var(--muted)] transition-colors">
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={(event) => handleAccountNavigation(event, item.href)}
+                          className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-[var(--muted)] transition-colors"
+                        >
                           {item.label}
                         </Link>
                       ))}

@@ -1,28 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { requireAuth } from "@/lib/auth/session";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser,
-  faShoppingBag,
-  faGift,
-  faHeart,
-  faLocationDot,
-  faArrowLeft,
-} from "@fortawesome/free-solid-svg-icons";
 
 export const metadata: Metadata = {
   title: "My Account",
 };
-
-const ACCOUNT_NAV = [
-  { href: "/account", label: "Overview", icon: faUser },
-  { href: "/account/profile", label: "My Profile", icon: faUser },
-  { href: "/account/orders", label: "My Orders", icon: faShoppingBag },
-  { href: "/account/rewards", label: "Loyalty Rewards", icon: faGift },
-  { href: "/account/addresses", label: "My Addresses", icon: faLocationDot },
-  { href: "/wishlist", label: "Wishlist", icon: faHeart },
-];
 
 export default async function AccountLayout({
   children,
@@ -43,26 +24,7 @@ export default async function AccountLayout({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Sidebar Nav */}
-        <aside className="lg:col-span-1">
-          <nav className="card p-3 space-y-1">
-            {ACCOUNT_NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-surface-2 hover:text-accent text-text-secondary"
-              >
-                <FontAwesomeIcon icon={item.icon} className="w-4 h-4 text-text-muted" />
-                <span>{item.label}</span>
-              </Link>
-            ))}
-          </nav>
-        </aside>
-
-        {/* Content */}
-        <main className="lg:col-span-3">{children}</main>
-      </div>
+      <main>{children}</main>
     </div>
   );
 }
