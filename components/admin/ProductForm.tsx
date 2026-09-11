@@ -387,7 +387,7 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
         </div>
         <p className="text-xs text-text-muted">
           {initialData
-            ? "Select replacement JPG, PNG, WebP, or AVIF images. Uploading replaces the current images; the first image becomes primary."
+            ? "Select replacement JPG, PNG, WebP, or AVIF images. Uploading replaces the current images; click Update Product to save the replacement."
             : "Select one or more local JPG, PNG, WebP, or AVIF images. The first image is used as the primary image."}
         </p>
 
