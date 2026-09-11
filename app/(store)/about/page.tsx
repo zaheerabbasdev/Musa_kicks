@@ -26,7 +26,7 @@ export default function AboutPage() {
         <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tight">
           Crafting the Culture of <span className="gradient-text">Footwear</span>
         </h1>
-        <p className="mt-6 text-lg sm:text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-6 max-w-2xl mx-auto text-center text-lg sm:text-xl text-neutral-600 leading-relaxed">
           Musa Kicks was born from an obsession with authentic sneaker craftsmanship,
           uncompromising silhouettes, and modern street aesthetics.
         </p>
