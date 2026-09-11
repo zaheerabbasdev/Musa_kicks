@@ -8,6 +8,7 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { SizeSelector } from "@/components/products/SizeSelector";
 import { ColorSelector, QuantitySelector } from "@/components/products/ColorSelector";
 import { useCartStore } from "@/store/cart.store";
+import { useWishlistStore } from "@/store/wishlist.store";
 import type { ProductWithImages } from "@/types";
 import { toast } from "react-toastify";
 
@@ -31,10 +32,11 @@ export function AddToCartSection({
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [addedFeedback, setAddedFeedback] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
+  const isWishlisted = useWishlistStore((s) => s.isInWishlist(product.id));
+  const toggleWishlist = useWishlistStore((s) => s.toggleItem);
 
   // Get unique colors
   const colors = [
@@ -176,7 +178,30 @@ export function AddToCartSection({
         <button
           onClick={() => {
             const nextWishlisted = !isWishlisted;
-            setIsWishlisted(nextWishlisted);
+            toggleWishlist({
+              id: product.id,
+              slug: product.slug,
+              name: product.name,
+              price: Number(product.price),
+              compareAtPrice: product.compareAtPrice ? Number(product.compareAtPrice) : null,
+              images: product.images.map((image) => ({
+                publicId: image.publicId,
+                imageUrl: image.imageUrl,
+                altText: image.altText,
+              })),
+              category: product.category
+                ? { name: product.category.name, slug: product.category.slug }
+                : null,
+              isNewArrival: product.isNewArrival,
+              isBestSeller: product.isBestSeller,
+              isFeatured: product.isFeatured,
+              variants: product.variants.map((variant) => ({
+                size: variant.size,
+                color: variant.color,
+                colorHex: variant.colorHex,
+                stock: variant.stock,
+              })),
+            });
             toast.success(
               nextWishlisted ? "Added to your wishlist." : "Removed from your wishlist."
             );
