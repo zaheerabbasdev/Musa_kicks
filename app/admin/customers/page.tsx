@@ -21,17 +21,17 @@ export default async function AdminCustomersPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Customer Directory</h1>
-        <p className="text-xs text-text-muted mt-0.5">
+    <div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-display font-bold">Customer Directory</h1>
+        <p style={{ color: "var(--muted-foreground)" }}>
           {customers.length} registered customers with orders and loyalty status
         </p>
       </div>
 
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="admin-table w-full">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>Customer</th>
@@ -41,7 +41,7 @@ export default async function AdminCustomersPage() {
                 <th>Member Since</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody>
               {customers.map((c) => {
                 const cycle = c.loyaltyCycles[0];
                 return (

@@ -27,10 +27,10 @@ export default async function AdminLoyaltyPage() {
   const activeCycles = cycles.filter((c) => c.status === "ACTIVE").length;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Loyalty Rewards Management</h1>
-        <p className="text-xs text-text-muted mt-0.5">
+    <div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-display font-bold">Loyalty Rewards Management</h1>
+        <p style={{ color: "var(--muted-foreground)" }}>
           Monitor customer shoe purchase loyalty streaks, unlocks, and claim fulfillment
         </p>
       </div>
@@ -62,7 +62,7 @@ export default async function AdminLoyaltyPage() {
       {/* Cycles Table */}
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="admin-table w-full">
+          <table className="data-table">
             <thead>
               <tr>
                 <th>Customer</th>
@@ -72,7 +72,7 @@ export default async function AdminLoyaltyPage() {
                 <th>Last Activity</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody>
               {cycles.map((c) => {
                 const hasClaimed = c.user.rewards.some((r) => r.status === "CLAIMED");
                 const hasAvailable = c.user.rewards.some((r) => r.status === "AVAILABLE");
