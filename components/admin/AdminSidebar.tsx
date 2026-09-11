@@ -99,16 +99,6 @@ export function AdminSidebar({ onClose }: AdminSidebarProps = {}) {
 
       {/* Bottom actions & Profile */}
       <div className="p-4 border-t border-white/10 space-y-2">
-        <Link
-          href="/"
-          className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-neutral-400 hover:text-white hover:bg-white/5 transition-all"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>Live Storefront</span>
-          <span className="text-neutral-500">↗</span>
-        </Link>
-
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
           className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all text-left"
