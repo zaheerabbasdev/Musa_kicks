@@ -9,6 +9,30 @@ interface ColorSelectorProps {
   onSelect: (color: string) => void;
 }
 
+const namedColors: Record<string, string> = {
+  black: "#000000",
+  white: "#ffffff",
+  blue: "#2563eb",
+  red: "#dc2626",
+  green: "#16a34a",
+  yellow: "#facc15",
+  orange: "#f97316",
+  brown: "#92400e",
+  beige: "#d6c2a1",
+  gray: "#9ca3af",
+  grey: "#9ca3af",
+  purple: "#9333ea",
+  pink: "#ec4899",
+  navy: "#1e3a8a",
+  maroon: "#7f1d1d",
+};
+
+function getColorValue(color: string, colorHex?: string | null) {
+  if (colorHex) return colorHex;
+  const normalizedColor = color.trim().toLowerCase();
+  return namedColors[normalizedColor] ?? normalizedColor;
+}
+
 export function ColorSelector({ colors, selectedColor, onSelect }: ColorSelectorProps) {
   return (
     <div>
@@ -33,7 +57,8 @@ export function ColorSelector({ colors, selectedColor, onSelect }: ColorSelector
                   : "border-transparent hover:border-[var(--border-strong)]"
               } ${isOutOfStock ? "opacity-40 cursor-not-allowed" : ""}`}
               style={{
-                background: colorHex ?? "#888",
+                background: getColorValue(color, colorHex),
+                borderColor: color.trim().toLowerCase() === "white" ? "#d1d5db" : undefined,
                 boxShadow: isSelected ? "0 0 0 2px var(--background), 0 0 0 4px var(--primary)" : undefined,
               }}
               title={`${color}${isOutOfStock ? " (Out of stock)" : ""}`}
