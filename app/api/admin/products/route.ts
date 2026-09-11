@@ -71,6 +71,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Each product variant must have a unique SKU." }, { status: 400 });
     }
 
+    const [existingProduct, existingVariant] = await Promise.all([
+      prisma.product.findUnique({ where: { sku }, select: { id: true } }),
+      variantSkus.length
+        ? prisma.productVariant.findFirst({
+            where: { sku: { in: variantSkus } },
+            select: { sku: true },
+          })
+        : null,
+    ]);
+    if (existingProduct) {
+      return NextResponse.json(
+        { message: `Product SKU "${sku}" is already in use. Please enter a unique SKU.` },
+        { status: 409 }
+      );
+    }
+    if (existingVariant) {
+      return NextResponse.json(
+        { message: `Variant SKU "${existingVariant.sku}" is already in use. Please enter a unique SKU.` },
+        { status: 409 }
+      );
+    }
+
     const category = await prisma.category.findUnique({ where: { id: categoryId }, select: { id: true } });
     if (!category) {
       return NextResponse.json({ message: "Please select an existing product category." }, { status: 400 });
@@ -125,9 +147,14 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Failed to create product:", error);
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-      const target = Array.isArray(error.meta?.target) ? error.meta.target.join(", ") : "SKU";
+      const target = Array.isArray(error.meta?.target) ? error.meta.target.join(", ") : String(error.meta?.target ?? "");
+      const message = target.includes("products_sku") || target === "sku"
+        ? "That product SKU is already in use. Please enter a unique SKU."
+        : target.includes("ProductVariant") || target.includes("product_variants")
+          ? "That variant SKU is already in use. Please enter a unique SKU."
+          : "A SKU is already in use. Please enter unique product and variant SKUs.";
       return NextResponse.json(
-        { message: `A product or variant with this ${target} already exists. Use a unique SKU.` },
+        { message },
         { status: 409 }
       );
     }
