@@ -58,7 +58,7 @@ export default async function HomePage() {
         <div className="absolute top-1/2 right-0 w-[550px] h-[550px] rounded-full bg-amber-500/10 blur-[150px] pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none opacity-40" />
 
-        <div className="container-site relative z-10 py-16 md:py-24">
+        <div className="container-site relative z-10 py-16 md:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             {/* Left Content */}
             <div className="lg:col-span-7 flex flex-col items-start">
@@ -79,7 +79,7 @@ export default async function HomePage() {
               </h1>
 
               {/* Description */}
-              <p className="text-lg md:text-xl leading-relaxed text-neutral-300 max-w-xl mb-10">
+              <p className="text-lg md:text-xl text-justify leading-relaxed text-neutral-300 max-w-xl mb-6! mt-6! ml-2!">
                 Artisan footwear crafted for those who define the culture. Engineered with
                 uncompromising luxury materials and everyday street comfort.
               </p>
@@ -264,13 +264,13 @@ export default async function HomePage() {
               </span>
             </h2>
 
-            <p className="text-base sm:text-lg leading-relaxed text-neutral-300 max-w-2xl mx-auto mb-10">
+            <p className="text-base sm:text-lg text-justify leading-relaxed text-neutral-300 max-w-2xl mx-auto mb-10 mt-6! ml-24!">
               Every qualifying order automatically advances your loyalty milestone streak. Complete 4 purchases
               to unlock exclusive pairs or limited-edition designer merchandise.
             </p>
 
             {/* Futuristic 4-Step Milestone Tracker */}
-            <div className="max-w-xl mx-auto bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md mb-10">
+            <div className="max-w-xl mx-auto bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md mb-10 mt-10!">
               <div className="flex items-center justify-between relative">
                 {/* Connecting background bar */}
                 <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-1 bg-white/10 z-0" />
@@ -444,7 +444,7 @@ export default async function HomePage() {
                 Engineered on quality.
               </span>
             </h2>
-            <p className="text-base sm:text-lg leading-relaxed text-neutral-300 mb-6">
+            <p className="text-base sm:text-lg text-justify leading-relaxed text-neutral-300 mb-6 mt-6!">
               Musa Kicks was founded with a single mission: footwear should never compromise between
               unapologetic streetwear aesthetics and uncompromising craftsmanship.
             </p>
@@ -454,7 +454,7 @@ export default async function HomePage() {
             </p>
             <Link
               href="/about"
-              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-sm font-extrabold uppercase tracking-wider bg-white text-neutral-950 hover:bg-neutral-100 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
+              className="inline-flex items-center mt-6! gap-2.5 px-8 py-4 rounded-xl text-sm font-extrabold uppercase tracking-wider bg-white text-neutral-950 hover:bg-neutral-100 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
             >
               <span>Read Our Full Story</span>
               <FontAwesomeIcon icon={faArrowRight} className="w-4 h-4" />
