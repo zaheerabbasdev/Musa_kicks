@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+# lockfile generation has been unstable in this environment (npm 11.x + Tailwind's
+# oxide/emnapi optional deps) — omitted so the host's no-lockfile install path runs
+package-lock.json
 /.pnp
 .pnp.*
 .yarn/*
